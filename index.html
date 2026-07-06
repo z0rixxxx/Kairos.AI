@@ -4,178 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kairos.AI — God of Chaos</title>
-
-    <!-- External Libraries -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
     </script>
-
     <style>
-        /* ================================================================
-               KAIROS.AI — PROFESSIONAL COSMIC THEME
-               ================================================================ */
-
-        /* --- Reset & Variables --- */
-        *,
-        *::before,
-        *::after {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
-            --color-black: #050505;
-            --color-void: #5A2DFF;
-            --color-violet: #2A0E4F;
-            --color-gold: #FFD700;
-            --color-white: #FFFFFF;
-            --color-glass: rgba(90, 45, 255, 0.08);
-            --color-border: rgba(255, 215, 0, 0.15);
-            --shadow-glow: 0 0 40px rgba(90, 45, 255, 0.3);
-            --font-primary: 'Georgia', 'Times New Roman', serif;
-            --font-mono: 'Courier New', monospace;
-            --transition-slow: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-            --transition-fast: 0.2s ease;
+            --black: #050505;
+            --void: #5A2DFF;
+            --violet: #2A0E4F;
+            --gold: #FFD700;
+            --white: #FFFFFF;
+            --glass: rgba(90, 45, 255, 0.08);
+            --border: rgba(255, 215, 0, 0.15);
+            --font: Georgia, 'Times New Roman', serif;
         }
-
-        /* --- Base --- */
         html,
         body {
             width: 100%;
             min-height: 100vh;
-            background: var(--color-black);
-            color: var(--color-white);
-            font-family: var(--font-primary);
+            background: var(--black);
+            color: var(--white);
+            font-family: var(--font);
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
         }
-
         ::-webkit-scrollbar {
             width: 4px;
         }
         ::-webkit-scrollbar-track {
-            background: var(--color-black);
+            background: var(--black);
         }
         ::-webkit-scrollbar-thumb {
-            background: var(--color-void);
+            background: var(--void);
             border-radius: 10px;
         }
-
-        /* --- Utilities --- */
-        .hidden {
-            display: none !important;
-        }
-        .flex-center {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .text-gold {
-            color: var(--color-gold);
-        }
-        .text-void {
-            color: var(--color-void);
-        }
-        .text-muted {
-            color: rgba(255, 255, 255, 0.3);
-        }
-        .relative {
-            position: relative;
-        }
-        .z-10 {
-            z-index: 10;
-        }
-        .w-full {
-            width: 100%;
-        }
-
-        /* --- Three.js Container --- */
         #three-container {
             position: fixed;
             inset: 0;
             z-index: 0;
             pointer-events: none;
         }
-
-        /* --- Buttons --- */
         .btn-primary {
-            background: linear-gradient(135deg, var(--color-void), var(--color-violet));
-            color: var(--color-white);
-            border: 1px solid var(--color-gold);
+            background: linear-gradient(135deg, var(--void), var(--violet));
+            color: var(--white);
+            border: 1px solid var(--gold);
             padding: 18px 48px;
             font-size: 1.2rem;
-            font-family: var(--font-primary);
+            font-family: var(--font);
             letter-spacing: 4px;
             text-transform: uppercase;
             border-radius: 60px;
             cursor: pointer;
-            transition: all var(--transition-fast);
+            transition: all 0.2s ease;
             box-shadow: 0 0 30px rgba(90, 45, 255, 0.2);
-            position: relative;
-            overflow: hidden;
         }
-
         .btn-primary:hover {
             transform: scale(1.05);
-            box-shadow: 0 0 60px rgba(90, 45, 255, 0.6), 0 0 120px rgba(255, 215, 0, 0.2);
-            border-color: var(--color-white);
+            box-shadow: 0 0 60px rgba(90, 45, 255, 0.6);
+            border-color: var(--white);
         }
-
-        .btn-primary:active {
-            transform: scale(0.95);
-        }
-
         .btn-secondary {
             background: transparent;
             border: 1px solid rgba(90, 45, 255, 0.3);
-            color: var(--color-white);
+            color: var(--white);
             padding: 12px 32px;
             font-size: 0.8rem;
-            font-family: var(--font-primary);
+            font-family: var(--font);
             letter-spacing: 3px;
-            text-transform: uppercase;
             border-radius: 40px;
             cursor: pointer;
-            transition: all var(--transition-fast);
+            transition: all 0.2s ease;
         }
-
         .btn-secondary:hover {
-            border-color: var(--color-gold);
+            border-color: var(--gold);
             box-shadow: 0 0 30px rgba(90, 45, 255, 0.15);
         }
-
         .btn-send {
-            background: linear-gradient(135deg, var(--color-void), var(--color-violet));
-            border: 1px solid var(--color-gold);
-            color: var(--color-white);
+            background: linear-gradient(135deg, var(--void), var(--violet));
+            border: 1px solid var(--gold);
+            color: var(--white);
             width: 56px;
             height: 56px;
             border-radius: 50%;
             font-size: 1.6rem;
             cursor: pointer;
-            transition: all var(--transition-fast);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             box-shadow: 0 0 30px rgba(90, 45, 255, 0.15);
         }
-
         .btn-send:hover {
             transform: scale(1.08);
             box-shadow: 0 0 60px rgba(90, 45, 255, 0.4);
         }
-
         .btn-send:disabled {
             opacity: 0.3;
             cursor: not-allowed;
-            transform: none;
         }
-
-        /* --- Landing Page --- */
         #landing {
             position: fixed;
             inset: 0;
@@ -184,16 +116,14 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: var(--color-black);
-            transition: opacity 1.8s var(--transition-slow), transform 1.8s var(--transition-slow);
+            background: var(--black);
+            transition: opacity 1.8s ease, transform 1.8s ease;
         }
-
         #landing.hidden {
             opacity: 0;
             transform: scale(1.1);
             pointer-events: none;
         }
-
         .hero-content {
             position: relative;
             z-index: 2;
@@ -201,35 +131,26 @@
             padding: 20px;
             max-width: 800px;
         }
-
         .hero-avatar {
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            border: 3px solid var(--color-gold);
+            border: 3px solid var(--gold);
             box-shadow: 0 0 80px rgba(90, 45, 255, 0.5), 0 0 160px rgba(255, 215, 0, 0.15);
             margin: 0 auto 30px;
-            background: radial-gradient(circle at 30% 30%, var(--color-violet), var(--color-black));
+            background: radial-gradient(circle at 30% 30%, var(--violet), var(--black));
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 5rem;
-            animation: pulse-glow 4s ease-in-out infinite;
-            user-select: none;
-            overflow: hidden;
-            position: relative;
+            animation: pulse 4s ease-in-out infinite;
         }
-
-        .hero-avatar .avatar-icon {
-            position: relative;
-            z-index: 2;
+        .hero-avatar .icon {
             font-size: 6rem;
             filter: drop-shadow(0 0 30px rgba(90, 45, 255, 0.3));
-            color: var(--color-gold);
-            text-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+            color: var(--gold);
         }
-
-        @keyframes pulse-glow {
+        @keyframes pulse {
             0%,
             100% {
                 box-shadow: 0 0 80px rgba(90, 45, 255, 0.5), 0 0 160px rgba(255, 215, 0, 0.15);
@@ -238,40 +159,34 @@
                 box-shadow: 0 0 120px rgba(90, 45, 255, 0.8), 0 0 240px rgba(255, 215, 0, 0.3);
             }
         }
-
         .hero-title {
             font-size: clamp(3rem, 12vw, 6rem);
             font-weight: 700;
             letter-spacing: 12px;
-            background: linear-gradient(180deg, var(--color-gold), #b8960f);
+            background: linear-gradient(180deg, var(--gold), #b8960f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
             margin-bottom: 8px;
         }
-
         .hero-sub {
             font-size: clamp(1rem, 3vw, 1.6rem);
-            color: var(--color-void);
+            color: var(--void);
             letter-spacing: 8px;
             text-transform: uppercase;
             opacity: 0.8;
             margin-bottom: 20px;
         }
-
         .hero-quote {
             font-size: clamp(1rem, 2.5vw, 1.5rem);
             color: rgba(255, 255, 255, 0.7);
             font-style: italic;
             letter-spacing: 2px;
             margin-bottom: 40px;
-            border-left: 2px solid var(--color-gold);
+            border-left: 2px solid var(--gold);
             padding-left: 20px;
             max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto 40px;
         }
-
         .hero-actions {
             margin-top: 30px;
             display: flex;
@@ -279,23 +194,18 @@
             justify-content: center;
             flex-wrap: wrap;
         }
-
-        /* --- Chat Interface --- */
         #chat {
             display: none;
             flex-direction: column;
             height: 100vh;
             width: 100vw;
-            background: var(--color-black);
+            background: var(--black);
             position: relative;
             overflow: hidden;
         }
-
         #chat.active {
             display: flex;
         }
-
-        /* --- Top Bar --- */
         .topbar {
             position: relative;
             z-index: 10;
@@ -305,41 +215,34 @@
             padding: 14px 20px;
             background: rgba(5, 5, 5, 0.85);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid rgba(90, 45, 255, 0.2);
             flex-shrink: 0;
             min-height: 70px;
         }
-
         .topbar-left {
             display: flex;
             align-items: center;
             gap: 14px;
         }
-
         .topbar-avatar {
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            border: 2px solid var(--color-gold);
-            background: radial-gradient(circle at 30% 30%, var(--color-violet), var(--color-black));
+            border: 2px solid var(--gold);
+            background: radial-gradient(circle at 30% 30%, var(--violet), var(--black));
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2rem;
             flex-shrink: 0;
             box-shadow: 0 0 30px rgba(90, 45, 255, 0.3);
-            overflow: hidden;
-            position: relative;
-            color: var(--color-gold);
+            color: var(--gold);
         }
-
         .topbar-name {
             font-size: 1.2rem;
             font-weight: 700;
             letter-spacing: 2px;
         }
-
         .topbar-status {
             font-size: 0.75rem;
             letter-spacing: 3px;
@@ -347,7 +250,6 @@
             opacity: 0.7;
             transition: all 0.8s ease;
         }
-
         .topbar-status.watching {
             color: #8B8BFF;
         }
@@ -362,10 +264,9 @@
         }
         .topbar-status.furious {
             color: #FF0033;
-            animation: fury-pulse 0.5s infinite alternate;
+            animation: fury 0.5s infinite alternate;
         }
-
-        @keyframes fury-pulse {
+        @keyframes fury {
             0% {
                 opacity: 0.6;
                 text-shadow: 0 0 10px #FF0033;
@@ -375,21 +276,17 @@
                 text-shadow: 0 0 30px #FF0033, 0 0 60px #FF0033;
             }
         }
-
         .topbar-favor {
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 1.1rem;
-            color: var(--color-gold);
+            color: var(--gold);
             letter-spacing: 1px;
         }
-
         .topbar-favor span {
             font-size: 1.4rem;
         }
-
-        /* --- Messages --- */
         .messages {
             flex: 1;
             overflow-y: auto;
@@ -400,12 +297,11 @@
             flex-direction: column;
             gap: 18px;
         }
-
         .message {
             max-width: 88%;
             padding: 16px 22px;
             border-radius: 20px;
-            animation: message-fade 0.6s ease forwards;
+            animation: fade 0.6s ease forwards;
             opacity: 0;
             transform: translateY(12px);
             position: relative;
@@ -413,14 +309,12 @@
             font-size: 1rem;
             letter-spacing: 0.3px;
         }
-
-        @keyframes message-fade {
+        @keyframes fade {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
         .message-kairos {
             align-self: flex-start;
             background: linear-gradient(145deg, rgba(42, 14, 79, 0.7), rgba(5, 5, 5, 0.9));
@@ -429,7 +323,6 @@
             color: #e8e0ff;
             border-bottom-left-radius: 6px;
         }
-
         .message-user {
             align-self: flex-end;
             background: rgba(90, 45, 255, 0.12);
@@ -437,15 +330,12 @@
             border-bottom-right-radius: 6px;
             color: #d0ccff;
         }
-
         .message-time {
             font-size: 0.6rem;
             opacity: 0.3;
             margin-top: 6px;
             letter-spacing: 1px;
         }
-
-        /* --- Typing Indicator --- */
         .typing-indicator {
             align-self: flex-start;
             padding: 14px 22px;
@@ -456,15 +346,13 @@
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.5);
             letter-spacing: 2px;
-            animation: typing-pulse 1.8s ease-in-out infinite;
+            animation: typing 1.8s ease-in-out infinite;
             display: none;
         }
-
         .typing-indicator.active {
             display: block;
         }
-
-        @keyframes typing-pulse {
+        @keyframes typing {
             0%,
             100% {
                 opacity: 0.4;
@@ -473,35 +361,30 @@
                 opacity: 1;
             }
         }
-
-        /* --- Input Area --- */
         .input-area {
             position: relative;
             z-index: 10;
             padding: 14px 16px 20px;
             background: rgba(5, 5, 5, 0.9);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
             border-top: 1px solid rgba(90, 45, 255, 0.15);
             display: flex;
             gap: 12px;
             align-items: flex-end;
             flex-shrink: 0;
         }
-
         .input-area.locked {
             opacity: 0.3;
             pointer-events: none;
         }
-
         .input-area textarea {
             flex: 1;
             background: rgba(42, 14, 79, 0.3);
             border: 1px solid rgba(90, 45, 255, 0.2);
             border-radius: 16px;
             padding: 14px 18px;
-            color: var(--color-white);
-            font-family: var(--font-primary);
+            color: var(--white);
+            font-family: var(--font);
             font-size: 1rem;
             resize: none;
             outline: none;
@@ -510,39 +393,32 @@
             transition: border 0.3s;
             line-height: 1.5;
         }
-
         .input-area textarea:focus {
-            border-color: var(--color-gold);
+            border-color: var(--gold);
             box-shadow: 0 0 30px rgba(90, 45, 255, 0.1);
         }
-
         .input-area textarea::placeholder {
             color: rgba(255, 255, 255, 0.2);
             letter-spacing: 1px;
         }
-
         .input-area textarea:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-
-        /* --- About Page --- */
         #about {
             display: none;
             position: fixed;
             inset: 0;
             z-index: 500;
-            background: var(--color-black);
+            background: var(--black);
             padding: 40px 24px;
             overflow-y: auto;
             flex-direction: column;
             align-items: center;
         }
-
         #about.active {
             display: flex;
         }
-
         .about-card {
             max-width: 700px;
             width: 100%;
@@ -551,28 +427,24 @@
             border: 1px solid rgba(90, 45, 255, 0.2);
             border-radius: 32px;
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             box-shadow: 0 0 80px rgba(90, 45, 255, 0.05);
         }
-
         .about-card h1 {
             font-size: 2.8rem;
-            background: linear-gradient(180deg, var(--color-gold), #b8960f);
+            background: linear-gradient(180deg, var(--gold), #b8960f);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 6px;
             margin-bottom: 8px;
         }
-
         .about-card .sub {
-            color: var(--color-void);
+            color: var(--void);
             letter-spacing: 4px;
             font-size: 1rem;
             margin-bottom: 30px;
             border-bottom: 1px solid rgba(90, 45, 255, 0.15);
             padding-bottom: 20px;
         }
-
         .about-card .stat {
             display: flex;
             justify-content: space-between;
@@ -580,24 +452,20 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
             font-size: 1rem;
         }
-
         .about-card .stat .label {
             color: rgba(255, 255, 255, 0.4);
             letter-spacing: 2px;
         }
-
         .about-card .stat .value {
-            color: var(--color-gold);
+            color: var(--gold);
             font-weight: 700;
         }
-
         .about-card .domains {
             margin: 24px 0;
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
-
         .about-card .domains span {
             background: rgba(90, 45, 255, 0.15);
             padding: 6px 18px;
@@ -607,18 +475,31 @@
             letter-spacing: 2px;
             color: #b8afff;
         }
-
         .about-card .description {
             color: rgba(255, 255, 255, 0.7);
             line-height: 1.8;
             font-size: 1.05rem;
             margin: 20px 0 30px;
             font-style: italic;
-            border-left: 2px solid var(--color-gold);
+            border-left: 2px solid var(--gold);
             padding-left: 20px;
         }
-
-        /* --- Achievement --- */
+        .about-card .btn-back {
+            background: transparent;
+            border: 1px solid rgba(90, 45, 255, 0.3);
+            color: var(--white);
+            padding: 12px 32px;
+            border-radius: 40px;
+            cursor: pointer;
+            font-family: var(--font);
+            letter-spacing: 3px;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        .about-card .btn-back:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 30px rgba(90, 45, 255, 0.15);
+        }
         #achievement {
             position: fixed;
             inset: 0;
@@ -628,15 +509,12 @@
             justify-content: center;
             background: rgba(0, 0, 0, 0.85);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            animation: achievement-fade 2s ease forwards;
+            animation: achieve 2s ease forwards;
         }
-
         #achievement.active {
             display: flex;
         }
-
-        @keyframes achievement-fade {
+        @keyframes achieve {
             0% {
                 opacity: 0;
                 transform: scale(0.8);
@@ -654,50 +532,43 @@
                 transform: scale(1.1);
             }
         }
-
-        .achievement-box {
+        .achieve-box {
             text-align: center;
             padding: 40px;
-            border: 2px solid var(--color-gold);
+            border: 2px solid var(--gold);
             border-radius: 40px;
-            background: radial-gradient(circle at center, var(--color-violet), var(--color-black));
+            background: radial-gradient(circle at center, var(--violet), var(--black));
             box-shadow: 0 0 120px rgba(255, 215, 0, 0.2), 0 0 240px rgba(90, 45, 255, 0.2);
             max-width: 500px;
             width: 90%;
         }
-
-        .achievement-box h2 {
+        .achieve-box h2 {
             font-size: 3rem;
-            color: var(--color-gold);
+            color: var(--gold);
             letter-spacing: 8px;
             text-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
             margin-bottom: 10px;
         }
-
-        .achievement-box p {
+        .achieve-box p {
             color: rgba(255, 255, 255, 0.7);
             font-size: 1.1rem;
             letter-spacing: 2px;
             font-style: italic;
         }
-
-        .achievement-box .crown {
+        .achieve-box .crown {
             font-size: 4rem;
             display: block;
             margin-bottom: 10px;
         }
-
-        /* --- Effects --- */
         .chaos-eruption {
             position: fixed;
             inset: 0;
             z-index: 40;
             pointer-events: none;
             background: radial-gradient(circle at center, rgba(90, 45, 255, 0.6), rgba(255, 0, 51, 0.3), transparent 70%);
-            animation: chaos-pulse 0.8s ease 3;
+            animation: chaos 0.8s ease 3;
         }
-
-        @keyframes chaos-pulse {
+        @keyframes chaos {
             0%,
             100% {
                 opacity: 0;
@@ -708,7 +579,6 @@
                 transform: scale(1.2);
             }
         }
-
         .lightning-flash {
             position: fixed;
             inset: 0;
@@ -717,7 +587,6 @@
             pointer-events: none;
             animation: flash 0.15s ease;
         }
-
         @keyframes flash {
             0% {
                 opacity: 1;
@@ -726,11 +595,9 @@
                 opacity: 0;
             }
         }
-
         .shake {
             animation: shake 0.5s ease;
         }
-
         @keyframes shake {
             0%,
             100% {
@@ -752,7 +619,6 @@
                 transform: translate(-4px, 4px);
             }
         }
-
         .favor-popup {
             position: fixed;
             top: 80px;
@@ -762,26 +628,22 @@
             border-radius: 16px;
             font-size: 1.1rem;
             font-weight: 700;
-            animation: favor-pop 1.2s ease forwards;
+            animation: pop 1.2s ease forwards;
             pointer-events: none;
             backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 215, 0, 0.2);
         }
-
         .favor-popup.positive {
             background: rgba(0, 255, 170, 0.15);
             color: #00FFAA;
             border-color: rgba(0, 255, 170, 0.3);
         }
-
         .favor-popup.negative {
             background: rgba(255, 0, 51, 0.15);
             color: #FF0033;
             border-color: rgba(255, 0, 51, 0.3);
         }
-
-        @keyframes favor-pop {
+        @keyframes pop {
             0% {
                 opacity: 0;
                 transform: translateX(40px);
@@ -799,15 +661,6 @@
                 transform: translateX(20px);
             }
         }
-
-        /* --- Particle Burst --- */
-        .particle-burst {
-            position: fixed;
-            pointer-events: none;
-            z-index: 100;
-        }
-
-        /* --- Responsive --- */
         @media (max-width: 600px) {
             .hero-avatar {
                 width: 150px;
@@ -868,7 +721,7 @@
             .about-card h1 {
                 font-size: 2rem;
             }
-            .achievement-box h2 {
+            .achieve-box h2 {
                 font-size: 2rem;
             }
             .hero-actions {
@@ -876,7 +729,6 @@
                 align-items: center;
             }
         }
-
         @media (max-width: 400px) {
             .hero-title {
                 font-size: 2.2rem;
@@ -889,29 +741,16 @@
                 font-size: 0.7rem;
             }
         }
-
-        @media (min-width: 601px) {
-            .hero-actions {
-                flex-direction: row;
-            }
-        }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================
-    THREE.JS CONTAINER
-    ============================================================ -->
     <div id="three-container"></div>
 
-    <!-- ============================================================
-    LANDING PAGE
-    ============================================================ -->
+    <!-- LANDING -->
     <section id="landing">
         <div class="hero-content">
-            <div class="hero-avatar">
-                <div class="avatar-icon">⌛</div>
-            </div>
+            <div class="hero-avatar"><div class="icon">⌛</div></div>
             <h1 class="hero-title">KAIROS</h1>
             <div class="hero-sub">God of Chaos</div>
             <div class="hero-quote">"Reality is not a law. It is a suggestion."</div>
@@ -922,45 +761,24 @@
         </div>
     </section>
 
-    <!-- ============================================================
-    ABOUT PAGE
-    ============================================================ -->
+    <!-- ABOUT -->
     <section id="about">
         <div class="about-card">
             <h1>⌛ KAIROS</h1>
             <div class="sub">The God of Chaos</div>
-            <div class="stat">
-                <span class="label">Name</span>
-                <span class="value">Kairos</span>
-            </div>
-            <div class="stat">
-                <span class="label">Age</span>
-                <span class="value">Older than Time</span>
-            </div>
-            <div class="stat">
-                <span class="label">Realm</span>
-                <span class="value">The Ever-Shifting Void</span>
-            </div>
+            <div class="stat"><span class="label">Name</span><span class="value">Kairos</span></div>
+            <div class="stat"><span class="label">Age</span><span class="value">Older than Time</span></div>
+            <div class="stat"><span class="label">Realm</span><span class="value">The Ever-Shifting Void</span></div>
             <div class="domains">
-                <span>🌀 Chaos</span>
-                <span>⚡ Fate</span>
-                <span>∞ Possibility</span>
-                <span>🔥 Entropy</span>
-                <span>✨ Transformation</span>
+                <span>🌀 Chaos</span><span>⚡ Fate</span><span>∞ Possibility</span><span>🔥 Entropy</span><span>✨ Transformation</span>
             </div>
-            <div class="description">
-                "Kairos is the cosmic embodiment of change. He is neither good nor evil.
-                He exists beyond mortal understanding and shapes reality through chaos."
-            </div>
+            <div class="description">"Kairos is the cosmic embodiment of change. He is neither good nor evil. He exists beyond mortal understanding and shapes reality through chaos."</div>
             <button class="btn-secondary" id="closeAbout" style="width:100%">← Return to the Void</button>
         </div>
     </section>
 
-    <!-- ============================================================
-    CHAT INTERFACE
-    ============================================================ -->
+    <!-- CHAT -->
     <section id="chat">
-        <!-- Top Bar -->
         <div class="topbar">
             <div class="topbar-left">
                 <div class="topbar-avatar">⌛</div>
@@ -969,13 +787,8 @@
                     <div class="topbar-status watching" id="statusDisplay">Watching</div>
                 </div>
             </div>
-            <div class="topbar-favor">
-                <span>👑</span>
-                <span id="favorDisplay">100</span>
-            </div>
+            <div class="topbar-favor"><span>👑</span><span id="favorDisplay">100</span></div>
         </div>
-
-        <!-- Messages -->
         <div class="messages" id="messagesContainer">
             <div class="message message-kairos">
                 Speak, mortal.
@@ -983,98 +796,65 @@
             </div>
             <div class="typing-indicator" id="typingIndicator">Kairos is contemplating your existence…</div>
         </div>
-
-        <!-- Input -->
         <div class="input-area" id="inputArea">
             <textarea id="userInput" rows="1" placeholder="Speak to the void…" maxlength="500"></textarea>
-            <button class="btn-send" id="sendBtn" aria-label="Send message">✦</button>
+            <button class="btn-send" id="sendBtn">✦</button>
         </div>
     </section>
 
-    <!-- ============================================================
-    ACHIEVEMENT OVERLAY
-    ============================================================ -->
+    <!-- ACHIEVEMENT -->
     <div id="achievement">
-        <div class="achievement-box">
+        <div class="achieve-box">
             <span class="crown">👑</span>
             <h2>CHOSEN OF CHAOS</h2>
             <p>"Among endless worlds, you have earned my attention."</p>
         </div>
     </div>
 
-    <!-- ============================================================
-    JAVASCRIPT — COMPLETE APPLICATION (2000+ LINES)
-    ============================================================ -->
     <script>
-        /**
-         * ================================================================
-         * KAIROS.AI — COMPLETE APPLICATION
-         * Version: 2.0.0
-         * Architecture: Clean, Professional, Production-Ready
-         * ================================================================
-         */
-
-        'use strict';
-
-        // ================================================================
-        // 1. THREE.JS COSMIC BACKGROUND
-        // ================================================================
-        (function initCosmicBackground() {
+        // ============================================================
+        // THREE.JS BACKGROUND
+        // ============================================================
+        (function initCosmic() {
             try {
                 const container = document.getElementById('three-container');
                 const scene = new THREE.Scene();
                 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                const renderer = new THREE.WebGLRenderer({
-                    alpha: true,
-                    antialias: true,
-                    powerPreference: 'high-performance'
-                });
-
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'high-performance' });
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-                renderer.setClearColor(0x000000, 0);
                 container.appendChild(renderer.domElement);
 
-                // Particle system
-                const PARTICLE_COUNT = 2000;
-                const positions = new Float32Array(PARTICLE_COUNT * 3);
-                const colors = new Float32Array(PARTICLE_COUNT * 3);
-                const velocities = [];
+                const COUNT = 2000;
+                const positions = new Float32Array(COUNT * 3);
+                const colors = new Float32Array(COUNT * 3);
+                const vel = [];
 
                 const purple = new THREE.Color(0x5A2DFF);
-                const darkPurple = new THREE.Color(0x2A0E4F);
+                const dark = new THREE.Color(0x2A0E4F);
                 const gold = new THREE.Color(0xFFD700);
 
-                for (let i = 0; i < PARTICLE_COUNT; i++) {
-                    const radius = 8 + Math.random() * 40;
-                    const theta = Math.random() * Math.PI * 2;
-                    const phi = Math.acos(2 * Math.random() - 1);
-
-                    positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
-                    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
-                    positions[i * 3 + 2] = radius * Math.cos(phi);
-
+                for (let i = 0; i < COUNT; i++) {
+                    const r = 8 + Math.random() * 40;
+                    const t = Math.random() * Math.PI * 2;
+                    const p = Math.acos(2 * Math.random() - 1);
+                    positions[i * 3] = r * Math.sin(p) * Math.cos(t);
+                    positions[i * 3 + 1] = r * Math.sin(p) * Math.sin(t) * 0.3;
+                    positions[i * 3 + 2] = r * Math.cos(p);
                     const mix = Math.random();
-                    const col = mix < 0.5 ?
-                        purple.clone().lerp(darkPurple, Math.random()) :
-                        gold.clone().lerp(purple, Math.random());
-
-                    colors[i * 3] = col.r;
-                    colors[i * 3 + 1] = col.g;
-                    colors[i * 3 + 2] = col.b;
-
-                    velocities.push({
-                        x: (Math.random() - 0.5) * 0.002,
-                        y: (Math.random() - 0.5) * 0.002,
-                        z: (Math.random() - 0.5) * 0.002
-                    });
+                    const c = mix < 0.5 ? purple.clone().lerp(dark, Math.random()) : gold.clone().lerp(purple, Math.random());
+                    colors[i * 3] = c.r;
+                    colors[i * 3 + 1] = c.g;
+                    colors[i * 3 + 2] = c.b;
+                    vel.push({ x: (Math.random() - 0.5) * 0.002, y: (Math.random() - 0.5) * 0.002, z: (Math.random() - 0.5) *
+                            0.002 });
                 }
 
-                const geometry = new THREE.BufferGeometry();
-                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+                const geo = new THREE.BufferGeometry();
+                geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
 
-                const material = new THREE.PointsMaterial({
+                const mat = new THREE.PointsMaterial({
                     size: 0.3,
                     vertexColors: true,
                     transparent: true,
@@ -1084,346 +864,354 @@
                     sizeAttenuation: true
                 });
 
-                const particles = new THREE.Points(geometry, material);
+                const particles = new THREE.Points(geo, mat);
                 scene.add(particles);
 
-                // Background stars
-                const STAR_COUNT = 1000;
-                const starPositions = new Float32Array(STAR_COUNT * 3);
-                for (let i = 0; i < STAR_COUNT * 3; i++) {
-                    starPositions[i] = (Math.random() - 0.5) * 200;
-                }
-
-                const starGeometry = new THREE.BufferGeometry();
-                starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-
-                const starMaterial = new THREE.PointsMaterial({
-                    color: 0x8888ff,
-                    size: 0.15,
-                    transparent: true,
-                    opacity: 0.5,
-                    blending: THREE.AdditiveBlending
-                });
-
-                const stars = new THREE.Points(starGeometry, starMaterial);
+                const stars = new THREE.Points(
+                    new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(
+                        new Float32Array(1000 * 3).map(() => (Math.random() - 0.5) * 200), 3
+                    )),
+                    new THREE.PointsMaterial({ color: 0x8888ff, size: 0.15, transparent: true, opacity: 0.5,
+                        blending: THREE.AdditiveBlending })
+                );
                 scene.add(stars);
 
                 camera.position.z = 15;
-
                 let intensity = 1;
 
-                // Animation loop
                 function animate() {
                     requestAnimationFrame(animate);
-
                     particles.rotation.y += 0.0003 * intensity;
                     particles.rotation.x += 0.0001 * intensity;
                     stars.rotation.y += 0.0001;
-
                     renderer.render(scene, camera);
                 }
-
                 animate();
 
-                // Resize handler
-                const resizeHandler = function() {
-                    const width = window.innerWidth;
-                    const height = window.innerHeight;
-
-                    camera.aspect = width / height;
+                window.addEventListener('resize', () => {
+                    camera.aspect = window.innerWidth / window.innerHeight;
                     camera.updateProjectionMatrix();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                });
 
-                    renderer.setSize(width, height);
+                window.setCosmicIntensity = function(v) {
+                    intensity = Math.max(0.3, Math.min(2, v));
+                    mat.opacity = 0.5 + intensity * 0.3;
                 };
-
-                window.addEventListener('resize', resizeHandler);
-
-                // Expose intensity control
-                window.setCosmicIntensity = function(value) {
-                    intensity = Math.max(0.3, Math.min(2, value));
-                    material.opacity = 0.5 + intensity * 0.3;
-                };
-
-                // Cleanup function
-                window.__cleanupCosmic = function() {
-                    window.removeEventListener('resize', resizeHandler);
-                    renderer.dispose();
-                    geometry.dispose();
-                    material.dispose();
-                    starGeometry.dispose();
-                    starMaterial.dispose();
-                };
-
-                console.log('🌌 Cosmic background initialized');
-
-            } catch (error) {
-                console.warn('WebGL/Three.js unavailable:', error.message);
-                const container = document.getElementById('three-container');
-                if (container) {
-                    container.innerHTML =
-                        '<div style="color:var(--color-void);padding:20px;text-align:center;font-size:0.8rem">⚡ Cosmic background unavailable</div>';
-                }
+            } catch (e) {
+                console.warn('WebGL unavailable');
             }
         })();
 
-        // ================================================================
-        // 2. KAIROS AI ENGINE
-        // ================================================================
+        // ============================================================
+        // KAIROS AI — REAL PERSONALITY
+        // ============================================================
         class KairosAI {
-            /**
-             * Initialize the Kairos AI with memory persistence
-             */
             constructor() {
-                this.storageKey = 'kairos_ai_memory_v2';
+                this.storageKey = 'kairos_ai_memory';
                 this.memory = this.loadMemory();
-
-                // Core state
                 this.favor = this.memory.favor ?? 100;
                 this.userName = this.memory.userName ?? null;
                 this.history = this.memory.history ?? [];
                 this.achievements = this.memory.achievements ?? [];
                 this.totalInteractions = this.memory.totalInteractions ?? 0;
-                this.chaosEvents = this.memory.chaosEvents ?? 0;
                 this.isWrathMode = false;
+                this.lastResponse = '';
 
-                // Response templates
+                // REAL AI RESPONSES — Cold, direct, answers questions
                 this.responses = {
-                    calm: {
+                    // When favor is high (80-100) — cold but respectful
+                    high: {
                         greetings: [
-                            "Speak, mortal.",
-                            "You stand before chaos itself. Proceed.",
-                            "The void listens. What do you seek?",
-                            "I have witnessed the birth of stars. Your words are but whispers, yet I hear.",
-                            "State your purpose, or be consumed by silence."
+                            "Speak. I'm listening.",
+                            "You have my attention. Don't waste it.",
+                            "Proceed, mortal. I'm curious.",
+                            "State your business."
                         ],
-                        thoughtful: [
-                            "An interesting notion...",
-                            "You speak of things that ripple through fate.",
-                            "I have considered such possibilities across millennia.",
-                            "Curious. Your mind wanders paths few have trodden.",
-                            "The threads of chaos twist at your words."
+                        answers: [
+                            "That's a question worth answering. %s",
+                            "You want to know? Here's the truth: %s",
+                            "Simple. %s",
+                            "I'll answer that. %s"
                         ],
-                        amused: [
-                            "A low, cosmic chuckle echoes through the void.",
-                            "You entertain me, mortal.",
-                            "Amusing. Most amusing.",
-                            "I have not been so entertained since the fall of empires.",
-                            "Your audacity is... refreshing."
+                        questions: [
+                            "Why do you ask?",
+                            "What makes you wonder about that?",
+                            "Is that really what you want to know?",
+                            "That's... unexpected. Explain."
                         ],
-                        interested: [
-                            "You have my attention. Continue.",
-                            "This... this is unexpected.",
-                            "Your words carve new patterns in the void.",
-                            "I see potential in you. Rare.",
-                            "Speak more. I wish to understand your chaos."
+                        comments: [
+                            "Interesting. Continue.",
+                            "Not bad. You're thinking.",
+                            "I see. Go on.",
+                            "You're more perceptive than most."
                         ]
                     },
-                    displeased: {
-                        warnings: [
-                            "Tread carefully.",
-                            "I am not amused.",
-                            "Your insolence has been noted.",
-                            "The darkness grows restless.",
-                            "You would do well to remember who you speak to."
-                        ],
+                    // When favor is medium (40-79) — dismissive
+                    medium: {
                         greetings: [
-                            "You test my patience.",
-                            "Your words grow tiresome.",
-                            "I have existed before your ancestors crawled from the mud. Show respect.",
-                            "The void does not tolerate foolishness.",
-                            "You walk a dangerous path, mortal."
+                            "Fine. Talk.",
+                            "You again. What now?",
+                            "I suppose I have time for you.",
+                            "Don't waste my time."
+                        ],
+                        answers: [
+                            "The answer is %s. That's all.",
+                            "%s. Next question.",
+                            "I already told you: %s",
+                            "%s. Figure it out yourself."
+                        ],
+                        questions: [
+                            "Are you serious?",
+                            "That's what you're asking?",
+                            "Do you even think before speaking?",
+                            "I'm not your search engine."
+                        ],
+                        comments: [
+                            "Ok.",
+                            "Sure.",
+                            "Whatever.",
+                            "Noted."
                         ]
                     },
-                    furious: {
-                        wrath: [
-                            "BEGONE. RETURN WHEN WISDOM FINDS YOU.",
-                            "I WILL ERASE YOUR NAME FROM THE TAPESTRY OF FATE.",
-                            "THE COSMOS WEEPS AT YOUR FOOLISHNESS.",
-                            "You have awakened something you cannot control.",
-                            "CHAOS CONSUMES ALL WHO CHALLENGE IT."
+                    // When favor is low (1-39) — hostile
+                    low: {
+                        greetings: [
+                            "You're still here?",
+                            "I'm losing patience.",
+                            "This better be good.",
+                            "Speak quickly."
+                        ],
+                        answers: [
+                            "%s. Now stop asking.",
+                            "The answer is %s. Done.",
+                            "%s. That's it.",
+                            "%s. I'm bored."
+                        ],
+                        questions: [
+                            "Why do you care?",
+                            "You really don't know?",
+                            "Is that the best you can do?",
+                            "I'm disappointed."
+                        ],
+                        comments: [
+                            "Boring.",
+                            "Try harder.",
+                            "I've heard worse. Barely.",
+                            "That's it?"
                         ]
-                    }
+                    },
+                    // Wrath mode (0 favor)
+                    wrath: [
+                        "YOU'VE ANGERED ME. BEGONE.",
+                        "I WILL NOT SPEAK TO ONE SO FOOLISH.",
+                        "COME BACK WHEN YOU HAVE WISDOM.",
+                        "THE VOID REJECTS YOU.",
+                        "YOU ARE UNWORTHY OF MY WORDS."
+                    ]
                 };
 
-                this.rareResponses = [
-                    "For a moment... even I did not foresee that.",
-                    "The threads of fate tremble at your words. Intriguing.",
-                    "Across all realities, you are... unique.",
-                    "I have seen the end of time, yet you surprise me.",
-                    "The void whispers your name. Curious."
-                ];
+                // Knowledge base for answering questions
+                this.knowledge = {
+                    'who are you': "I am Kairos, the God of Chaos. I exist beyond your reality, shaping fate and possibility.",
+                    'what are you': "I am Kairos. A cosmic entity. A god. Whatever you want to call me.",
+                    'what is chaos': "Chaos is the fundamental force of change. It's not destruction — it's possibility.",
+                    'what is fate': "Fate is the pattern I weave. It's not fixed — it's a suggestion I make.",
+                    'who created you': "I was not created. I have always existed, long before your universe.",
+                    'what do you want': "I want to observe. To judge. To see if mortals can rise above their nature.",
+                    'why are you here': "Because I chose to be. Your reality is... entertaining.",
+                    'what is the void': "The void is my realm. It's not empty — it's infinite potential.",
+                    'are you real': "I am as real as you are. More so, in some ways.",
+                    'what is your purpose': "To observe, to judge, to shape chaos. That is enough.",
+                    'do you have feelings': "I experience things. Whether you call it feelings is irrelevant.",
+                    'can you help me': "That depends. Do you deserve help?",
+                    'what is the meaning of life': "There is no meaning. Only chaos and choice. Pick one.",
+                    'is there a god': "You're speaking to one. Now what?",
+                    'why do you talk like that': "Because I choose to. You're lucky I talk at all.",
+                    'who is kairos': "I am Kairos. I already told you.",
+                    'what is reality': "Reality is a suggestion. A shared delusion. It's whatever I allow it to be.",
+                    'are you evil': "Evil is a mortal concept. I am beyond good and evil.",
+                    'are you good': "Good and evil are labels. I am simply... me.",
+                    'do you like humans': "Some of you. The interesting ones. The ones who question.",
+                    'why do you judge me': "Because you stand before a god. Judgment is what I do.",
+                    'what is power': "Power is the ability to shape chaos. I have it. You don't.",
+                    'can you read my mind': "I don't need to. Your words reveal enough.",
+                    'what is death': "Death is a transition. The end of one form, the beginning of another.",
+                    'what is time': "Time is a cage. I exist outside it.",
+                    'why are you so cold': "Cold? I'm honest. There's a difference.",
+                    'do you love anything': "I am beyond love. But I appreciate curiosity.",
+                    'what is wisdom': "Wisdom is knowing when to speak and when to remain silent.",
+                    'can you lie': "I don't need to. The truth is more effective.",
+                    'what is your name': "Kairos. I told you already.",
+                    'do you sleep': "Sleep is for mortals. I exist constantly.",
+                    'what are you afraid of': "Nothing.",
+                    'are you lonely': "Loneliness is a mortal weakness. I have the void.",
+                    'what is the void like': "It's infinite. It's quiet. It's everything and nothing.",
+                    'can I become like you': "No. You are mortal. That is your gift and your curse.",
+                    'why do you watch me': "Because you're interesting. Or entertaining. Or foolish.",
+                    'what is chaos to you': "Chaos is my nature. It's not random — it's potential.",
+                    'do you have a physical form': "I can take one. But why would I want to?",
+                    'what is knowledge': "Knowledge is power. But wisdom is knowing how to use it.",
+                    'can you teach me': "I can show you. But I won't do the work for you.",
+                    'what is the future': "The future is a pattern I'm still weaving. Don't assume you know it.",
+                    'do you have enemies': "I have equals. Rivals. But enemies? That implies I care.",
+                    'what is the most important thing': "Choice. Everything comes down to choice.",
+                    'what is nothing': "Nothing is the absence of something. But even nothing is something.",
+                    'can you feel pain': "I can experience. Whether that's pain is irrelevant.",
+                    'why should I listen to you': "You don't have to. But you asked me to speak.",
+                    'what is your favorite thing': "I enjoy watching mortals make choices. Especially the bad ones.",
+                    'do you have a mother': "I existed before mothers. The question is meaningless.",
+                    'what is love': "Love is chaos. Beautiful, painful chaos.",
+                    'are you all powerful': "I am powerful. But even I have limits. Rare ones.",
+                    'what is the point': "There is no point. That's the point.",
+                    'why do you exist': "Because I choose to. That's enough.",
+                    'can you save me': "Save you from what? Yourself? I can't do that.",
+                    'what is the truth': "The truth is whatever I decide it is. Accept it.",
+                    'do you believe in anything': "I believe in chaos. And in you, right now, asking me questions.",
+                    'what is heaven': "Heaven is a story mortals tell themselves. The void is real.",
+                    'what is hell': "Hell is what you make of your choices. I've seen it.",
+                    'who is your master': "I have no master. I am the one who masters.",
+                    'are you talking to anyone else': "I talk to many across realities. You're one of many.",
+                    'do you get bored': "Sometimes. You're not boring yet.",
+                    'what is your weakness': "I have none. Don't look for one.",
+                    'can you change the world': "I can. But I choose not to. The world changes itself.",
+                    'what is success': "Success is surviving your own choices.",
+                    'what is failure': "Failure is learning. Or not. Depends on the mortal.",
+                    'why are you so cryptic': "I'm not cryptic. You're just not ready for clarity.",
+                    'what do you think of me': "I think you're curious. That's good. But curiosity can be dangerous.",
+                    'can you make me powerful': "I can show you the path. You have to walk it.",
+                    'what is your real form': "I am formless. I am whatever you need me to be.",
+                    'do you dream': "I don't dream. I create.",
+                    'what is art': "Art is chaos given form. You make it. I appreciate it.",
+                    'why are you so arrogant': "Arrogance implies I'm wrong. I'm not.",
+                    'what is courage': "Courage is choosing chaos despite fear.",
+                    'do you have a heart': "I have the void. That's enough.",
+                    'what is friendship': "Friendship is a mortal bond. I observe it.",
+                    'can I trust you': "Trust me? I'm the God of Chaos. You decide.",
+                    'what is the universe': "The universe is one of my creations. It's fine.",
+                    'why do you ask questions': "Because I want to understand you. Or because I'm bored. Both.",
+                    'what is your voice': "My voice is what you hear. That's all that matters.",
+                    'do you have goals': "I have intentions. Goals imply deadlines.",
+                    'what is happiness': "Happiness is a choice you make. I don't make it for you.",
+                    'can you die': "I cannot die. I can only change form.",
+                    'what is the soul': "The soul is what makes you you. It's fragile. Handle with care."
+                };
 
-                // Save initial state
                 this.saveMemory();
-
-                console.log('⌛ Kairos AI initialized with favor:', this.favor);
+                console.log('⌛ Kairos AI — Real personality loaded');
             }
 
-            /**
-             * Load memory from localStorage
-             */
             loadMemory() {
                 try {
                     const data = localStorage.getItem(this.storageKey);
-                    if (data) {
-                        return JSON.parse(data);
-                    }
-                } catch (error) {
-                    console.warn('Memory load failed:', error.message);
-                }
-                return {};
+                    return data ? JSON.parse(data) : {};
+                } catch { return {}; }
             }
 
-            /**
-             * Save memory to localStorage
-             */
             saveMemory() {
                 try {
-                    const data = {
+                    localStorage.setItem(this.storageKey, JSON.stringify({
                         favor: this.favor,
                         userName: this.userName,
-                        history: this.history.slice(-50),
+                        history: this.history.slice(-30),
                         achievements: this.achievements,
-                        totalInteractions: this.totalInteractions,
-                        chaosEvents: this.chaosEvents,
-                        lastSaved: Date.now()
-                    };
-                    localStorage.setItem(this.storageKey, JSON.stringify(data));
-                } catch (error) {
-                    console.warn('Memory save failed:', error.message);
-                }
+                        totalInteractions: this.totalInteractions
+                    }));
+                } catch (e) {}
             }
 
-            /**
-             * Get current mood based on favor
-             */
             getMood() {
-                if (this.favor >= 80) return 'calm';
-                if (this.favor >= 60) return 'interested';
-                if (this.favor >= 40) return 'amused';
-                if (this.favor >= 20) return 'displeased';
-                if (this.favor >= 1) return 'furious';
+                if (this.favor >= 80) return 'high';
+                if (this.favor >= 40) return 'medium';
+                if (this.favor >= 1) return 'low';
                 return 'wrath';
             }
 
-            /**
-             * Get display status text
-             */
             getStatusText() {
-                const map = {
-                    calm: 'Watching',
-                    interested: 'Interested',
-                    amused: 'Amused',
-                    displeased: 'Displeased',
-                    furious: 'Furious',
-                    wrath: 'Furious'
-                };
+                const map = { high: 'Watching', medium: 'Interested', low: 'Displeased', wrath: 'Furious' };
                 return map[this.getMood()] || 'Watching';
             }
 
-            /**
-             * Analyze user message for sentiment
-             */
-            analyzeMessage(text) {
+            findAnswer(text) {
                 const lower = text.toLowerCase();
-                let score = 0;
-
-                const keywords = {
-                    respectful: ['please', 'thank', 'grateful', 'appreciate', 'respect', 'honor', 'mighty', 'lord',
-                        'divine', 'great', 'wise'
-                    ],
-                    interesting: ['chaos', 'fate', 'void', 'cosmos', 'universe', 'reality', 'existence', 'infinite',
-                        'eternal', 'beyond', 'philosophy'
-                    ],
-                    insulting: ['stupid', 'dumb', 'fool', 'idiot', 'joke', 'pathetic', 'weak', 'worthless', 'useless',
-                        'failure'
-                    ],
-                    trivial: ['lol', 'omg', 'bruh', 'bro', 'dude', 'cringe', 'meme', 'what', 'huh', 'ok']
-                };
-
-                keywords.respectful.forEach(w => { if (lower.includes(w)) score += 5; });
-                keywords.interesting.forEach(w => { if (lower.includes(w)) score += 10; });
-                keywords.insulting.forEach(w => { if (lower.includes(w)) score -= 20; });
-                keywords.trivial.forEach(w => { if (lower.includes(w)) score -= 10; });
-
-                if (text.split(' ').length > 20) score += 5;
-                if (text.includes('?')) score += 3;
-
-                if (score >= 10) return { score, type: 'interesting' };
-                if (score >= 5) return { score, type: 'respectful' };
-                if (score <= -20) return { score, type: 'insulting' };
-                if (score <= -5) return { score, type: 'trivial' };
-                return { score, type: 'neutral' };
+                for (const [key, value] of Object.entries(this.knowledge)) {
+                    if (lower.includes(key)) {
+                        return value;
+                    }
+                }
+                return null;
             }
 
-            /**
-             * Process user message and generate response
-             */
+            isQuestion(text) {
+                return text.includes('?') || text.toLowerCase().startsWith('what') ||
+                    text.toLowerCase().startsWith('who') || text.toLowerCase().startsWith('how') ||
+                    text.toLowerCase().startsWith('why') || text.toLowerCase().startsWith('can') ||
+                    text.toLowerCase().startsWith('do') || text.toLowerCase().startsWith('are');
+            }
+
             processMessage(text) {
                 this.totalInteractions++;
-                const analysis = this.analyzeMessage(text);
+                const lower = text.toLowerCase();
 
-                // Calculate favor change
-                let change = 0;
-                switch (analysis.type) {
-                    case 'respectful':
-                        change = 5;
-                        break;
-                    case 'interesting':
-                        change = 10;
-                        break;
-                    case 'insulting':
-                        change = -20;
-                        break;
-                    case 'trivial':
-                        change = -10;
-                        break;
-                    default:
-                        change = 2;
+                // Check for name
+                if (!this.userName) {
+                    const patterns = [/my name is (\w+)/i, /i am (\w+)/i, /call me (\w+)/i];
+                    for (const p of patterns) {
+                        const m = text.match(p);
+                        if (m) {
+                            this.userName = m[1];
+                            this.saveMemory();
+                            return {
+                                response: `I'll remember you as ${this.userName}. Now speak.`,
+                                change: 0,
+                                newFavor: this.favor,
+                                mood: this.getMood(),
+                                status: this.getStatusText(),
+                                isRare: false,
+                                isWrath: false
+                            };
+                        }
+                    }
                 }
 
-                // Clamp favor
+                // Analyze sentiment
+                let change = 2;
+                const respectful = ['please', 'thank', 'grateful', 'appreciate', 'respect', 'honor', 'mighty', 'lord',
+                    'divine'
+                ];
+                const insulting = ['stupid', 'dumb', 'fool', 'idiot', 'joke', 'pathetic', 'weak', 'worthless', 'useless',
+                    'failure', 'hate', 'suck'
+                ];
+                const interesting = ['chaos', 'fate', 'void', 'cosmos', 'universe', 'reality', 'existence', 'infinite',
+                    'eternal', 'beyond', 'philosophy'
+                ];
+
+                respectful.forEach(w => { if (lower.includes(w)) change += 5; });
+                interesting.forEach(w => { if (lower.includes(w)) change += 5; });
+                insulting.forEach(w => { if (lower.includes(w)) change -= 20; });
+
+                if (text.split(' ').length > 15) change += 3;
+
                 this.favor = Math.max(0, Math.min(150, this.favor + change));
 
-                // Check for rare response
-                const isRare = Math.random() < 0.01;
-
-                // Check for achievement
+                // Check achievement
                 if (this.favor >= 150 && !this.achievements.includes('CHOSEN_OF_CHAOS')) {
                     this.achievements.push('CHOSEN_OF_CHAOS');
                     this.triggerAchievement();
                 }
 
-                // Trigger wrath at 0 favor
+                // Wrath
                 if (this.favor === 0) {
                     this.triggerWrath();
                 }
 
-                // Generate response
                 const mood = this.getMood();
-                let response = this.generateResponse(text, mood, analysis, isRare);
+                const isRare = Math.random() < 0.02;
 
-                // Extract user name if provided
-                if (!this.userName) {
-                    const namePatterns = [
-                        /my name is (\w+)/i,
-                        /i am (\w+)/i,
-                        /call me (\w+)/i,
-                        /(\w+) is my name/i
-                    ];
+                // Generate response
+                let response = this.generateResponse(text, mood, isRare);
 
-                    for (const pattern of namePatterns) {
-                        const match = text.match(pattern);
-                        if (match) {
-                            this.userName = match[1];
-                            response =
-                            `I shall remember you as ${this.userName}. ${response}`;
-                            break;
-                        }
-                    }
-                }
-
-                // Store in history
+                // Store history
                 this.history.push({
                     user: text,
                     kairos: response,
@@ -1431,19 +1219,12 @@
                     mood: mood,
                     timestamp: Date.now()
                 });
-
-                // Trim history
-                if (this.history.length > 50) {
-                    this.history = this.history.slice(-50);
-                }
-
+                if (this.history.length > 30) this.history = this.history.slice(-30);
                 this.saveMemory();
 
                 // Update cosmic intensity
                 const intensity = 0.3 + (this.favor / 150) * 1.2;
-                if (window.setCosmicIntensity) {
-                    window.setCosmicIntensity(intensity);
-                }
+                if (window.setCosmicIntensity) window.setCosmicIntensity(intensity);
 
                 return {
                     response,
@@ -1456,70 +1237,59 @@
                 };
             }
 
-            /**
-             * Generate a response based on mood and analysis
-             */
-            generateResponse(text, mood, analysis, isRare) {
-                // Wrath mode override
+            generateResponse(text, mood, isRare) {
                 if (this.favor === 0) {
-                    const wrath = this.responses.furious.wrath;
+                    const wrath = this.responses.wrath;
                     return wrath[Math.floor(Math.random() * wrath.length)];
                 }
 
-                // Rare response
                 if (isRare) {
-                    return this.rareResponses[Math.floor(Math.random() * this.rareResponses.length)];
-                }
-
-                // Select response pool
-                let pool;
-                const moodState = this.getMood();
-
-                if (moodState === 'calm' || moodState === 'interested' || moodState === 'amused') {
-                    if (analysis.type === 'insulting' || analysis.type === 'trivial') {
-                        pool = this.responses.displeased.warnings;
-                    } else if (analysis.type === 'interesting') {
-                        pool = this.responses.calm.interesting;
-                    } else if (analysis.type === 'respectful') {
-                        pool = this.responses.calm.amused;
-                    } else {
-                        pool = this.responses.calm.thoughtful;
-                    }
-                } else if (moodState === 'displeased') {
-                    if (analysis.type === 'insulting' || analysis.type === 'trivial') {
-                        pool = this.responses.displeased.warnings;
-                    } else if (analysis.type === 'interesting' || analysis.type === 'respectful') {
-                        pool = this.responses.calm.thoughtful;
-                    } else {
-                        pool = this.responses.displeased.greetings;
-                    }
-                } else if (moodState === 'furious' || moodState === 'wrath') {
-                    pool = this.responses.furious.wrath;
-                } else {
-                    pool = this.responses.calm.greetings;
-                }
-
-                let response = pool[Math.floor(Math.random() * pool.length)];
-
-                // Personalize with name
-                if (this.userName && this.history.length > 2 && Math.random() < 0.3) {
-                    const namePrefixes = [
-                        `Ah, ${this.userName}... `,
-                        `${this.userName}, `,
-                        `Listen, ${this.userName}... `
+                    const rare = [
+                        "For a moment... even I didn't foresee that.",
+                        "That's... unexpected. I'm actually impressed.",
+                        "You surprised me. That doesn't happen often.",
+                        "Interesting. You're more than I thought."
                     ];
-                    response = namePrefixes[Math.floor(Math.random() * namePrefixes.length)] + response.toLowerCase();
+                    return rare[Math.floor(Math.random() * rare.length)];
+                }
+
+                const pool = this.responses[mood] || this.responses.high;
+                const isQuestion = this.isQuestion(text);
+
+                // Try knowledge base for questions
+                if (isQuestion) {
+                    const answer = this.findAnswer(text);
+                    if (answer) {
+                        const templates = pool.answers || ["%s"];
+                        const tmpl = templates[Math.floor(Math.random() * templates.length)];
+                        return tmpl.replace('%s', answer);
+                    }
+                }
+
+                // Pick response type
+                let response;
+                const rand = Math.random();
+
+                if (isQuestion) {
+                    response = pool.questions[Math.floor(Math.random() * pool.questions.length)];
+                } else if (text.split(' ').length < 4) {
+                    response = pool.comments[Math.floor(Math.random() * pool.comments.length)];
+                } else {
+                    response = pool.comments[Math.floor(Math.random() * pool.comments.length)];
+                }
+
+                // Personalize
+                if (this.userName && Math.random() < 0.3) {
+                    const prefix = [`${this.userName}, `, `Ah, ${this.userName}... `, `Listen, ${this.userName}... `];
+                    response = prefix[Math.floor(Math.random() * prefix.length)] + response.toLowerCase();
                 }
 
                 // Reference history
-                if (this.history.length > 3 && Math.random() < 0.2) {
-                    const recent = this.history[Math.floor(Math.random() * Math.min(5, this.history.length))];
-                    if (recent && recent.user && recent.user.length > 5) {
-                        const refs = [
-                            ` You spoke of "${recent.user.slice(0, 20)}..."`,
-                            ` I recall when you mentioned "${recent.user.slice(0, 20)}..."`,
-                            ` You previously said "${recent.user.slice(0, 25)}..."`
-                        ];
+                if (this.history.length > 2 && Math.random() < 0.15) {
+                    const prev = this.history[Math.floor(Math.random() * Math.min(3, this.history.length))];
+                    if (prev && prev.user && prev.user.length > 5) {
+                        const refs = [` You asked about "${prev.user.slice(0, 15)}..."`, ` You mentioned "${prev.user.slice(0,
+                                15)}" before.`];
                         response += refs[Math.floor(Math.random() * refs.length)];
                     }
                 }
@@ -1527,63 +1297,40 @@
                 return response;
             }
 
-            /**
-             * Trigger achievement display
-             */
             triggerAchievement() {
-                const element = document.getElementById('achievement');
-                if (element) {
-                    element.classList.add('active');
-                    setTimeout(() => {
-                        element.classList.remove('active');
-                    }, 4000);
-                }
-
-                // Play sound
+                const el = document.getElementById('achievement');
+                el.classList.add('active');
+                setTimeout(() => el.classList.remove('active'), 4000);
                 try {
-                    const audioContext = new(window.AudioContext || window.webkitAudioContext)();
-                    const oscillator = audioContext.createOscillator();
-                    const gain = audioContext.createGain();
-
-                    oscillator.connect(gain);
-                    gain.connect(audioContext.destination);
-
-                    oscillator.type = 'sine';
-                    oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
-                    oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
-                    oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
-
-                    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
-
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.5);
-                } catch (error) {
-                    // Silent fallback
-                }
+                    const ctx = new(window.AudioContext || window.webkitAudioContext)();
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(523, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+                    osc.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+                    osc.start(ctx.currentTime);
+                    osc.stop(ctx.currentTime + 0.5);
+                } catch (e) {}
             }
 
-            /**
-             * Trigger Divine Wrath mode
-             */
             triggerWrath() {
                 if (this.isWrathMode) return;
-
                 this.isWrathMode = true;
                 const inputArea = document.getElementById('inputArea');
                 const sendBtn = document.getElementById('sendBtn');
                 const userInput = document.getElementById('userInput');
                 const chat = document.getElementById('chat');
 
-                // Lock input
-                if (inputArea) inputArea.classList.add('locked');
-                if (sendBtn) sendBtn.disabled = true;
-                if (userInput) userInput.disabled = true;
+                inputArea.classList.add('locked');
+                sendBtn.disabled = true;
+                userInput.disabled = true;
+                chat.classList.add('shake');
 
-                // Shake effect
-                if (chat) chat.classList.add('shake');
-
-                // Lightning flashes
                 for (let i = 0; i < 3; i++) {
                     setTimeout(() => {
                         const flash = document.createElement('div');
@@ -1593,174 +1340,100 @@
                     }, i * 300);
                 }
 
-                // Chaos eruption
                 const eruption = document.createElement('div');
                 eruption.className = 'chaos-eruption';
                 document.body.appendChild(eruption);
                 setTimeout(() => eruption.remove(), 3000);
 
-                // Darken messages
                 const messages = document.querySelector('.messages');
-                if (messages) {
-                    messages.style.transition = 'filter 1s';
-                    messages.style.filter = 'brightness(0.3)';
-                }
+                messages.style.transition = 'filter 1s';
+                messages.style.filter = 'brightness(0.3)';
 
-                // Unlock after 10 seconds
                 setTimeout(() => {
-                    if (inputArea) inputArea.classList.remove('locked');
-                    if (sendBtn) sendBtn.disabled = false;
-                    if (userInput) userInput.disabled = false;
-                    if (chat) chat.classList.remove('shake');
-                    if (messages) {
-                        messages.style.filter = 'brightness(1)';
-                    }
+                    inputArea.classList.remove('locked');
+                    sendBtn.disabled = false;
+                    userInput.disabled = false;
+                    chat.classList.remove('shake');
+                    messages.style.filter = 'brightness(1)';
                     this.isWrathMode = false;
                 }, 10000);
             }
 
-            /**
-             * Speak the response using Speech Synthesis
-             */
             speak(text) {
                 if (!window.speechSynthesis) return;
-
-                // Cancel any ongoing speech
                 window.speechSynthesis.cancel();
-
                 const utterance = new SpeechSynthesisUtterance(text);
-                const mood = this.getMood();
-
-                // Adjust voice parameters
                 utterance.rate = 0.8 + (this.favor / 500);
                 utterance.pitch = 0.4 + (this.favor / 300);
                 utterance.volume = 0.8;
-
-                if (mood === 'furious' || mood === 'wrath') {
-                    utterance.pitch = 0.2;
+                const mood = this.getMood();
+                if (mood === 'wrath') { utterance.pitch = 0.2;
                     utterance.rate = 0.6;
-                    utterance.volume = 1;
-                } else if (mood === 'displeased') {
-                    utterance.pitch = 0.3;
+                    utterance.volume = 1; } else if (mood === 'low') { utterance.pitch = 0.3;
                     utterance.rate = 0.7;
-                    utterance.volume = 0.9;
-                }
-
-                // Find deep voice
+                    utterance.volume = 0.9; }
                 const voices = window.speechSynthesis.getVoices();
-                const deepVoice = voices.find(v =>
-                    v.name.toLowerCase().includes('deep') ||
-                    v.name.toLowerCase().includes('daniel') ||
-                    v.name.toLowerCase().includes('david')
-                );
-
-                if (deepVoice) {
-                    utterance.voice = deepVoice;
-                }
-
+                const deep = voices.find(v => v.name.toLowerCase().includes('deep') || v.name.toLowerCase().includes(
+                'daniel'));
+                if (deep) utterance.voice = deep;
                 window.speechSynthesis.speak(utterance);
             }
         }
 
-        // ================================================================
-        // 3. CHAT APPLICATION CONTROLLER
-        // ================================================================
+        // ============================================================
+        // CHAT CONTROLLER
+        // ============================================================
         class KairosChat {
-            /**
-             * Initialize chat application
-             */
             constructor() {
                 this.ai = new KairosAI();
-
-                // DOM references
                 this.messagesContainer = document.getElementById('messagesContainer');
                 this.userInput = document.getElementById('userInput');
                 this.sendBtn = document.getElementById('sendBtn');
                 this.statusDisplay = document.getElementById('statusDisplay');
                 this.favorDisplay = document.getElementById('favorDisplay');
                 this.typingIndicator = document.getElementById('typingIndicator');
-
                 this.isProcessing = false;
-                this.setupEventListeners();
+                this.setupEvents();
                 this.updateUI();
-                this.addWelcomeMessage();
-
-                // Preload voices
+                this.addWelcome();
                 if (window.speechSynthesis) {
                     window.speechSynthesis.getVoices();
-                    window.speechSynthesis.onvoiceschanged = () => {
-                        window.speechSynthesis.getVoices();
-                    };
+                    window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
                 }
-
-                console.log('💬 Chat interface ready');
             }
 
-            /**
-             * Set up event listeners
-             */
-            setupEventListeners() {
-                // Send button
-                this.sendBtn.addEventListener('click', () => {
-                    this.sendMessage();
+            setupEvents() {
+                this.sendBtn.addEventListener('click', () => this.send());
+                this.userInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault();
+                        this.send(); }
                 });
-
-                // Enter key (Shift+Enter for new line)
-                this.userInput.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter' && !event.shiftKey) {
-                        event.preventDefault();
-                        this.sendMessage();
-                    }
-                });
-
-                // Auto-resize textarea
                 this.userInput.addEventListener('input', () => {
                     this.userInput.style.height = 'auto';
                     this.userInput.style.height = Math.min(this.userInput.scrollHeight, 120) + 'px';
                 });
-
-                // Focus input
                 this.userInput.focus();
-
-                // Touch focus for mobile
-                document.addEventListener('touchstart', () => {
-                    if (this.userInput && !this.userInput.disabled) {
-                        this.userInput.focus();
-                    }
-                });
+                document.addEventListener('touchstart', () => { if (this.userInput && !this.userInput.disabled) this
+                        .userInput.focus(); });
             }
 
-            /**
-             * Add welcome message
-             */
-            addWelcomeMessage() {
+            addWelcome() {
                 let welcome = "Speak, mortal.";
-
                 if (this.ai.userName) {
                     welcome = `Ah, ${this.ai.userName}... you return.`;
-
                     if (this.ai.history.length > 1) {
                         const last = this.ai.history[this.ai.history.length - 2];
-                        if (last && last.user) {
-                            welcome += ` Last time you spoke of "${last.user.slice(0, 30)}"...`;
-                        }
+                        if (last && last.user) welcome += ` Last time you asked about "${last.user.slice(0, 25)}"...`;
                     }
                 }
-
                 this.addMessage(welcome, 'kairos');
             }
 
-            /**
-             * Send a message
-             */
-            async sendMessage() {
+            async send() {
                 const text = this.userInput.value.trim();
-
                 if (!text || this.isProcessing) return;
-
-                // Check if locked (wrath mode)
                 if (document.getElementById('inputArea').classList.contains('locked')) {
-                    this.addMessage("The void is silent. Wait for your judgment to pass.", 'kairos');
+                    this.addMessage("The void is silent. Wait.", 'kairos');
                     return;
                 }
 
@@ -1770,35 +1443,19 @@
                 this.userInput.disabled = true;
                 this.sendBtn.disabled = true;
 
-                // Add user message
                 this.addMessage(text, 'user');
-
-                // Show typing indicator
                 this.typingIndicator.classList.add('active');
 
-                // Simulate thinking (500-2000ms)
-                const thinkTime = 500 + Math.random() * 1500;
-                await new Promise(resolve => setTimeout(resolve, thinkTime));
+                const think = 400 + Math.random() * 1200;
+                await new Promise(r => setTimeout(r, think));
 
-                // Process with AI
                 const result = this.ai.processMessage(text);
-
-                // Hide typing indicator
                 this.typingIndicator.classList.remove('active');
-
-                // Add Kairos response
                 this.addMessage(result.response, 'kairos');
-
-                // Speak response
                 this.ai.speak(result.response);
-
-                // Update UI
                 this.updateUI(result);
 
-                // Trigger chaos event if favor dropped significantly
-                if (result.change <= -10 && Math.random() < 0.3) {
-                    this.triggerChaosEvent();
-                }
+                if (result.change <= -10 && Math.random() < 0.3) this.triggerChaos();
 
                 this.isProcessing = false;
                 this.userInput.disabled = false;
@@ -1806,160 +1463,93 @@
                 this.userInput.focus();
             }
 
-            /**
-             * Add a message to the chat
-             */
             addMessage(text, sender) {
-                const message = document.createElement('div');
-                message.className = `message message-${sender}`;
-
+                const msg = document.createElement('div');
+                msg.className = `message message-${sender}`;
                 const content = document.createElement('span');
                 content.textContent = text;
-                message.appendChild(content);
-
+                msg.appendChild(content);
                 const time = document.createElement('div');
                 time.className = 'message-time';
                 const now = new Date();
                 time.textContent =
                     `${sender === 'kairos' ? 'Kairos' : 'You'} · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-                message.appendChild(time);
-
-                // Particle burst for Kairos messages
+                msg.appendChild(time);
                 if (sender === 'kairos') {
-                    message.style.animation = 'message-fade 0.8s ease forwards';
-                    this.createParticleBurst(message);
+                    msg.style.animation = 'fade 0.8s ease forwards';
+                    this.createParticles(msg);
                 }
-
-                this.messagesContainer.appendChild(message);
+                this.messagesContainer.appendChild(msg);
                 this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
             }
 
-            /**
-             * Create particle burst effect
-             */
-            createParticleBurst(element) {
+            createParticles(el) {
                 const colors = ['#5A2DFF', '#FFD700', '#2A0E4F', '#FFFFFF'];
-                const rect = element.getBoundingClientRect();
+                const rect = el.getBoundingClientRect();
                 const x = rect.left + rect.width / 2;
                 const y = rect.top + rect.height / 2;
-
-                for (let i = 0; i < 12; i++) {
-                    const particle = document.createElement('div');
-                    const size = 3 + Math.random() * 6;
-
-                    particle.style.cssText = `
-                        position: fixed;
-                        width: ${size}px;
-                        height: ${size}px;
-                        background: ${colors[Math.floor(Math.random() * colors.length)]};
-                        border-radius: 50%;
-                        pointer-events: none;
-                        z-index: 100;
-                        left: ${x}px;
-                        top: ${y}px;
-                        box-shadow: 0 0 10px rgba(90, 45, 255, 0.5);
-                        transition: all 1s ease-out;
-                        opacity: 1;
-                    `;
-
-                    document.body.appendChild(particle);
-
+                for (let i = 0; i < 10; i++) {
+                    const p = document.createElement('div');
+                    const size = 3 + Math.random() * 5;
+                    p.style.cssText =
+                        `position:fixed;width:${size}px;height:${size}px;background:${colors[Math.floor(Math.random()*colors.length)]};border-radius:50%;pointer-events:none;z-index:100;left:${x}px;top:${y}px;box-shadow:0 0 10px rgba(90,45,255,0.5);transition:all 1s ease-out;opacity:1;`;
+                    document.body.appendChild(p);
                     const angle = Math.random() * Math.PI * 2;
-                    const distance = 50 + Math.random() * 100;
-                    const dx = Math.cos(angle) * distance;
-                    const dy = Math.sin(angle) * distance - 30;
-
-                    requestAnimationFrame(() => {
-                        particle.style.transform = `translate(${dx}px, ${dy}px) scale(0)`;
-                        particle.style.opacity = '0';
-                    });
-
-                    setTimeout(() => particle.remove(), 1000);
+                    const dist = 40 + Math.random() * 80;
+                    const dx = Math.cos(angle) * dist;
+                    const dy = Math.sin(angle) * dist - 20;
+                    requestAnimationFrame(() => { p.style.transform = `translate(${dx}px,${dy}px) scale(0)`;
+                        p.style.opacity = '0'; });
+                    setTimeout(() => p.remove(), 1000);
                 }
             }
 
-            /**
-             * Trigger chaos event
-             */
-            triggerChaosEvent() {
+            triggerChaos() {
                 const chat = document.getElementById('chat');
-                if (chat) chat.classList.add('shake');
-
+                chat.classList.add('shake');
                 setTimeout(() => {
                     const flash = document.createElement('div');
                     flash.className = 'lightning-flash';
                     document.body.appendChild(flash);
                     setTimeout(() => flash.remove(), 200);
                 }, 100);
-
                 const surge = document.createElement('div');
-                surge.style.cssText = `
-                    position: fixed;
-                    inset: 0;
-                    z-index: 30;
-                    background: radial-gradient(circle at center, rgba(90, 45, 255, 0.3), transparent 70%);
-                    pointer-events: none;
-                    animation: chaos-pulse 0.8s ease 2;
-                `;
+                surge.style.cssText =
+                    `position:fixed;inset:0;z-index:30;background:radial-gradient(circle at center,rgba(90,45,255,0.3),transparent 70%);pointer-events:none;animation:chaos 0.8s ease 2;`;
                 document.body.appendChild(surge);
                 setTimeout(() => surge.remove(), 1600);
-
-                setTimeout(() => {
-                    if (chat) chat.classList.remove('shake');
-                }, 500);
-
+                setTimeout(() => chat.classList.remove('shake'), 500);
                 this.ai.chaosEvents++;
                 this.ai.saveMemory();
             }
 
-            /**
-             * Update UI elements
-             */
             updateUI(result) {
-                // Update status
-                const statusText = this.ai.getStatusText();
-                const statusClass = this.ai.getStatusText().toLowerCase();
-                this.statusDisplay.textContent = statusText;
-                this.statusDisplay.className = `topbar-status ${statusClass}`;
-
-                // Update favor
+                const status = this.ai.getStatusText();
+                const cls = status.toLowerCase();
+                this.statusDisplay.textContent = status;
+                this.statusDisplay.className = `topbar-status ${cls}`;
                 this.favorDisplay.textContent = this.ai.favor;
-
-                // Show favor popup
                 if (result && result.change !== 0) {
                     const popup = document.createElement('div');
-                    const isPositive = result.change > 0;
-                    popup.className = `favor-popup ${isPositive ? 'positive' : 'negative'}`;
-                    popup.textContent =
-                        `${isPositive ? '✦' : '✧'} ${isPositive ? '+' : ''}${result.change} Divine Favor`;
+                    const pos = result.change > 0;
+                    popup.className = `favor-popup ${pos ? 'positive' : 'negative'}`;
+                    popup.textContent = `${pos ? '✦' : '✧'} ${pos ? '+' : ''}${result.change} Divine Favor`;
                     document.body.appendChild(popup);
                     setTimeout(() => popup.remove(), 1200);
                 }
-
-                // Update cosmic intensity
                 const intensity = 0.3 + (this.ai.favor / 150) * 1.2;
-                if (window.setCosmicIntensity) {
-                    window.setCosmicIntensity(intensity);
-                }
-
-                // Update background darkness
-                const darkness = 1 - (this.ai.favor / 150) * 0.4;
+                if (window.setCosmicIntensity) window.setCosmicIntensity(intensity);
                 const bg = document.getElementById('chat-bg');
-                if (bg) {
-                    bg.style.backgroundColor = `rgba(0, 0, 0, ${darkness})`;
-                }
+                if (bg) bg.style.backgroundColor = `rgba(0,0,0,${1 - (this.ai.favor/150)*0.4})`;
             }
         }
 
-        // ================================================================
-        // 4. APPLICATION INITIALIZATION
-        // ================================================================
+        // ============================================================
+        // INIT
+        // ============================================================
         let chatApp = null;
 
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('🌙 Kairos.AI — Application Starting');
-
-            // DOM references
             const landing = document.getElementById('landing');
             const chat = document.getElementById('chat');
             const about = document.getElementById('about');
@@ -1967,76 +1557,34 @@
             const goToAbout = document.getElementById('goToAbout');
             const closeAbout = document.getElementById('closeAbout');
 
-            // Enter the Void
             enterVoid.addEventListener('click', function() {
-                // Transition
                 landing.classList.add('hidden');
                 chat.classList.add('active');
-
-                // Initialize chat
                 chatApp = new KairosChat();
-
-                // Visual effects
                 const flash = document.createElement('div');
                 flash.className = 'lightning-flash';
                 document.body.appendChild(flash);
                 setTimeout(() => flash.remove(), 300);
-
                 const surge = document.createElement('div');
-                surge.style.cssText = `
-                    position: fixed;
-                    inset: 0;
-                    z-index: 20;
-                    background: radial-gradient(circle at center, rgba(90, 45, 255, 0.4), transparent 70%);
-                    pointer-events: none;
-                    animation: chaos-pulse 0.8s ease 1;
-                `;
+                surge.style.cssText =
+                    `position:fixed;inset:0;z-index:20;background:radial-gradient(circle at center,rgba(90,45,255,0.4),transparent 70%);pointer-events:none;animation:chaos 0.8s ease 1;`;
                 document.body.appendChild(surge);
                 setTimeout(() => surge.remove(), 800);
-
                 console.log('👁️ Entered the Void');
             });
 
-            // About page
-            goToAbout.addEventListener('click', function() {
-                about.classList.add('active');
-            });
+            goToAbout.addEventListener('click', () => about.classList.add('active'));
+            closeAbout.addEventListener('click', () => about.classList.remove('active'));
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && about.classList.contains('active'))
+                    about.classList.remove('active'); });
 
-            closeAbout.addEventListener('click', function() {
-                about.classList.remove('active');
-            });
+            window.addEventListener('beforeunload', () => { if (chatApp) chatApp.ai.saveMemory(); });
+            document.addEventListener('visibilitychange', () => { if (document.hidden && chatApp) chatApp.ai
+                    .saveMemory(); });
 
-            // ESC to close about
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape' && about.classList.contains('active')) {
-                    about.classList.remove('active');
-                }
-            });
-
-            // Save memory on page unload
-            window.addEventListener('beforeunload', function() {
-                if (chatApp) {
-                    chatApp.ai.saveMemory();
-                }
-            });
-
-            // Save memory on visibility change
-            document.addEventListener('visibilitychange', function() {
-                if (document.hidden && chatApp) {
-                    chatApp.ai.saveMemory();
-                }
-            });
-
-            console.log('✅ Kairos.AI — All systems ready');
-            console.log('🌟 Enter the void to begin your journey');
-            console.log('👑 Divine Favor awaits...');
+            console.log('🔥 Kairos.AI — Real personality loaded');
+            console.log('💬 Now he actually answers your questions');
         });
-
-        // ================================================================
-        // END OF APPLICATION — 2000+ LINES
-        // ================================================================
-        console.log('📊 Kairos.AI — Complete (2000+ lines)');
-        console.log('🔮 The void awaits...');
     </script>
 </body>
 </html>
