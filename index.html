@@ -1,174 +1,2042 @@
-1. INCOMPLETE STRING (BREAKS JAVASCRIPT)
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kairos.AI — God of Chaos</title>
 
-Current:
-"I have not been so entertained since the fall of
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js">
+    </script>
 
-Problem:
-The string never closes with a quotation mark.
+    <style>
+        /* ================================================================
+               KAIROS.AI — PROFESSIONAL COSMIC THEME
+               ================================================================ */
 
-Fix:
-"I have not been so entertained since the fall of empires."
+        /* --- Reset & Variables --- */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-2. INCOMPLETE ARRAY / OBJECT
+        :root {
+            --color-black: #050505;
+            --color-void: #5A2DFF;
+            --color-violet: #2A0E4F;
+            --color-gold: #FFD700;
+            --color-white: #FFFFFF;
+            --color-glass: rgba(90, 45, 255, 0.08);
+            --color-border: rgba(255, 215, 0, 0.15);
+            --shadow-glow: 0 0 40px rgba(90, 45, 255, 0.3);
+            --font-primary: 'Georgia', 'Times New Roman', serif;
+            --font-mono: 'Courier New', monospace;
+            --transition-slow: 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            --transition-fast: 0.2s ease;
+        }
 
-Current code ends inside:
+        /* --- Base --- */
+        html,
+        body {
+            width: 100%;
+            min-height: 100vh;
+            background: var(--color-black);
+            color: var(--color-white);
+            font-family: var(--font-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
-this.responses = {
-    calm: {
-        greetings: [...],
-        thoughtful: [...],
-        amused: [
-            ...
-        ]
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--color-black);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--color-void);
+            border-radius: 10px;
+        }
 
-Problem:
-The object is never closed.
+        /* --- Utilities --- */
+        .hidden {
+            display: none !important;
+        }
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .text-gold {
+            color: var(--color-gold);
+        }
+        .text-void {
+            color: var(--color-void);
+        }
+        .text-muted {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        .relative {
+            position: relative;
+        }
+        .z-10 {
+            z-index: 10;
+        }
+        .w-full {
+            width: 100%;
+        }
 
-Missing:
-]
-}
-}
+        /* --- Three.js Container --- */
+        #three-container {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
 
-3. MISSING CLASS CLOSING BRACE
+        /* --- Buttons --- */
+        .btn-primary {
+            background: linear-gradient(135deg, var(--color-void), var(--color-violet));
+            color: var(--color-white);
+            border: 1px solid var(--color-gold);
+            padding: 18px 48px;
+            font-size: 1.2rem;
+            font-family: var(--font-primary);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: 0 0 30px rgba(90, 45, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
 
-Current:
-class KairosAI {
-    constructor() {
-        ...
-    }
+        .btn-primary:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 60px rgba(90, 45, 255, 0.6), 0 0 120px rgba(255, 215, 0, 0.2);
+            border-color: var(--color-white);
+        }
 
-Problem:
-Class never closes.
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
 
-Fix:
-}
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid rgba(90, 45, 255, 0.3);
+            color: var(--color-white);
+            padding: 12px 32px;
+            font-size: 0.8rem;
+            font-family: var(--font-primary);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
 
-4. MISSING loadMemory() METHOD
+        .btn-secondary:hover {
+            border-color: var(--color-gold);
+            box-shadow: 0 0 30px rgba(90, 45, 255, 0.15);
+        }
 
-Current:
-this.memory = this.loadMemory();
+        .btn-send {
+            background: linear-gradient(135deg, var(--color-void), var(--color-violet));
+            border: 1px solid var(--color-gold);
+            color: var(--color-white);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 1.6rem;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 0 30px rgba(90, 45, 255, 0.15);
+        }
 
-Problem:
-loadMemory() is not defined.
+        .btn-send:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 60px rgba(90, 45, 255, 0.4);
+        }
 
-Add:
+        .btn-send:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-loadMemory() {
-    try {
-        return JSON.parse(localStorage.getItem('kairosMemory')) || {};
-    } catch {
-        return {};
-    }
-}
+        /* --- Landing Page --- */
+        #landing {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-black);
+            transition: opacity 1.8s var(--transition-slow), transform 1.8s var(--transition-slow);
+        }
 
-5. UNUSED VARIABLE
+        #landing.hidden {
+            opacity: 0;
+            transform: scale(1.1);
+            pointer-events: none;
+        }
 
-Current:
-const velocities = [];
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 20px;
+            max-width: 800px;
+        }
 
-Problem:
-Never used.
+        .hero-avatar {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 3px solid var(--color-gold);
+            box-shadow: 0 0 80px rgba(90, 45, 255, 0.5), 0 0 160px rgba(255, 215, 0, 0.15);
+            margin: 0 auto 30px;
+            background: radial-gradient(circle at 30% 30%, var(--color-violet), var(--color-black));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            animation: pulse-glow 4s ease-in-out infinite;
+            user-select: none;
+            overflow: hidden;
+            position: relative;
+        }
 
-Fix:
-Either remove it:
+        .hero-avatar .avatar-icon {
+            position: relative;
+            z-index: 2;
+            font-size: 6rem;
+            filter: drop-shadow(0 0 30px rgba(90, 45, 255, 0.3));
+            color: var(--color-gold);
+            text-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+        }
 
-// const velocities = [];
+        @keyframes pulse-glow {
+            0%,
+            100% {
+                box-shadow: 0 0 80px rgba(90, 45, 255, 0.5), 0 0 160px rgba(255, 215, 0, 0.15);
+            }
+            50% {
+                box-shadow: 0 0 120px rgba(90, 45, 255, 0.8), 0 0 240px rgba(255, 215, 0, 0.3);
+            }
+        }
 
-or use it in the animation loop.
+        .hero-title {
+            font-size: clamp(3rem, 12vw, 6rem);
+            font-weight: 700;
+            letter-spacing: 12px;
+            background: linear-gradient(180deg, var(--color-gold), #b8960f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 60px rgba(255, 215, 0, 0.2);
+            margin-bottom: 8px;
+        }
 
-6. UNUSED PARTICLE SIZE ATTRIBUTE
+        .hero-sub {
+            font-size: clamp(1rem, 3vw, 1.6rem);
+            color: var(--color-void);
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
 
-Current:
-geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
+        .hero-quote {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            color: rgba(255, 255, 255, 0.7);
+            font-style: italic;
+            letter-spacing: 2px;
+            margin-bottom: 40px;
+            border-left: 2px solid var(--color-gold);
+            padding-left: 20px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-Problem:
-THREE.PointsMaterial ignores custom size attributes.
+        .hero-actions {
+            margin-top: 30px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
 
-Fix:
-Remove it:
+        /* --- Chat Interface --- */
+        #chat {
+            display: none;
+            flex-direction: column;
+            height: 100vh;
+            width: 100vw;
+            background: var(--color-black);
+            position: relative;
+            overflow: hidden;
+        }
 
-// geometry.setAttribute('size', ...)
+        #chat.active {
+            display: flex;
+        }
 
-or use a custom ShaderMaterial.
+        /* --- Top Bar --- */
+        .topbar {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: rgba(5, 5, 5, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(90, 45, 255, 0.2);
+            flex-shrink: 0;
+            min-height: 70px;
+        }
 
-7. BUTTONS NEED EVENT LISTENERS
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
-Current IDs:
-enterVoid
-goToAbout
-closeAbout
-sendBtn
+        .topbar-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid var(--color-gold);
+            background: radial-gradient(circle at 30% 30%, var(--color-violet), var(--color-black));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            box-shadow: 0 0 30px rgba(90, 45, 255, 0.3);
+            overflow: hidden;
+            position: relative;
+            color: var(--color-gold);
+        }
 
-Problem:
-No click handlers shown.
+        .topbar-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
 
-Example fix:
+        .topbar-status {
+            font-size: 0.75rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.7;
+            transition: all 0.8s ease;
+        }
 
-document.getElementById("enterVoid")
-.addEventListener("click", () => {
-    document.getElementById("landing")
-    .classList.add("hidden");
+        .topbar-status.watching {
+            color: #8B8BFF;
+        }
+        .topbar-status.amused {
+            color: #FFD700;
+        }
+        .topbar-status.interested {
+            color: #00FFAA;
+        }
+        .topbar-status.displeased {
+            color: #FF6B35;
+        }
+        .topbar-status.furious {
+            color: #FF0033;
+            animation: fury-pulse 0.5s infinite alternate;
+        }
 
-    document.getElementById("chat")
-    .classList.add("active");
-});
+        @keyframes fury-pulse {
+            0% {
+                opacity: 0.6;
+                text-shadow: 0 0 10px #FF0033;
+            }
+            100% {
+                opacity: 1;
+                text-shadow: 0 0 30px #FF0033, 0 0 60px #FF0033;
+            }
+        }
 
-8. MISSING SEND BUTTON LOGIC
+        .topbar-favor {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: var(--color-gold);
+            letter-spacing: 1px;
+        }
 
-Add:
+        .topbar-favor span {
+            font-size: 1.4rem;
+        }
 
-document.getElementById("sendBtn")
-.addEventListener("click", sendMessage);
+        /* --- Messages --- */
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 16px 100px;
+            position: relative;
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
 
-function sendMessage() {
-    const input =
-        document.getElementById("userInput");
+        .message {
+            max-width: 88%;
+            padding: 16px 22px;
+            border-radius: 20px;
+            animation: message-fade 0.6s ease forwards;
+            opacity: 0;
+            transform: translateY(12px);
+            position: relative;
+            line-height: 1.6;
+            font-size: 1rem;
+            letter-spacing: 0.3px;
+        }
 
-    if (!input.value.trim()) return;
+        @keyframes message-fade {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    console.log(input.value);
-}
+        .message-kairos {
+            align-self: flex-start;
+            background: linear-gradient(145deg, rgba(42, 14, 79, 0.7), rgba(5, 5, 5, 0.9));
+            border: 1px solid rgba(90, 45, 255, 0.3);
+            box-shadow: 0 0 40px rgba(90, 45, 255, 0.15), inset 0 0 60px rgba(90, 45, 255, 0.05);
+            color: #e8e0ff;
+            border-bottom-left-radius: 6px;
+        }
 
-9. POSSIBLE THREE.JS CRASH
+        .message-user {
+            align-self: flex-end;
+            background: rgba(90, 45, 255, 0.12);
+            border: 1px solid rgba(90, 45, 255, 0.15);
+            border-bottom-right-radius: 6px;
+            color: #d0ccff;
+        }
 
-Current:
-const renderer = new THREE.WebGLRenderer(...)
+        .message-time {
+            font-size: 0.6rem;
+            opacity: 0.3;
+            margin-top: 6px;
+            letter-spacing: 1px;
+        }
 
-Problem:
-Some devices may not support WebGL.
+        /* --- Typing Indicator --- */
+        .typing-indicator {
+            align-self: flex-start;
+            padding: 14px 22px;
+            background: rgba(42, 14, 79, 0.4);
+            border-radius: 20px;
+            border-bottom-left-radius: 6px;
+            border: 1px solid rgba(90, 45, 255, 0.15);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            letter-spacing: 2px;
+            animation: typing-pulse 1.8s ease-in-out infinite;
+            display: none;
+        }
 
-Safer:
+        .typing-indicator.active {
+            display: block;
+        }
 
-try {
-    const renderer =
-        new THREE.WebGLRenderer({
-            alpha: true,
-            antialias: true
+        @keyframes typing-pulse {
+            0%,
+            100% {
+                opacity: 0.4;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* --- Input Area --- */
+        .input-area {
+            position: relative;
+            z-index: 10;
+            padding: 14px 16px 20px;
+            background: rgba(5, 5, 5, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(90, 45, 255, 0.15);
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+            flex-shrink: 0;
+        }
+
+        .input-area.locked {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .input-area textarea {
+            flex: 1;
+            background: rgba(42, 14, 79, 0.3);
+            border: 1px solid rgba(90, 45, 255, 0.2);
+            border-radius: 16px;
+            padding: 14px 18px;
+            color: var(--color-white);
+            font-family: var(--font-primary);
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            min-height: 52px;
+            max-height: 120px;
+            transition: border 0.3s;
+            line-height: 1.5;
+        }
+
+        .input-area textarea:focus {
+            border-color: var(--color-gold);
+            box-shadow: 0 0 30px rgba(90, 45, 255, 0.1);
+        }
+
+        .input-area textarea::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+            letter-spacing: 1px;
+        }
+
+        .input-area textarea:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- About Page --- */
+        #about {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 500;
+            background: var(--color-black);
+            padding: 40px 24px;
+            overflow-y: auto;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #about.active {
+            display: flex;
+        }
+
+        .about-card {
+            max-width: 700px;
+            width: 100%;
+            padding: 40px 32px;
+            background: rgba(42, 14, 79, 0.2);
+            border: 1px solid rgba(90, 45, 255, 0.2);
+            border-radius: 32px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 0 80px rgba(90, 45, 255, 0.05);
+        }
+
+        .about-card h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(180deg, var(--color-gold), #b8960f);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 6px;
+            margin-bottom: 8px;
+        }
+
+        .about-card .sub {
+            color: var(--color-void);
+            letter-spacing: 4px;
+            font-size: 1rem;
+            margin-bottom: 30px;
+            border-bottom: 1px solid rgba(90, 45, 255, 0.15);
+            padding-bottom: 20px;
+        }
+
+        .about-card .stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 1rem;
+        }
+
+        .about-card .stat .label {
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 2px;
+        }
+
+        .about-card .stat .value {
+            color: var(--color-gold);
+            font-weight: 700;
+        }
+
+        .about-card .domains {
+            margin: 24px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .about-card .domains span {
+            background: rgba(90, 45, 255, 0.15);
+            padding: 6px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(90, 45, 255, 0.2);
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: #b8afff;
+        }
+
+        .about-card .description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin: 20px 0 30px;
+            font-style: italic;
+            border-left: 2px solid var(--color-gold);
+            padding-left: 20px;
+        }
+
+        /* --- Achievement --- */
+        #achievement {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            animation: achievement-fade 2s ease forwards;
+        }
+
+        #achievement.active {
+            display: flex;
+        }
+
+        @keyframes achievement-fade {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            80% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(1.1);
+            }
+        }
+
+        .achievement-box {
+            text-align: center;
+            padding: 40px;
+            border: 2px solid var(--color-gold);
+            border-radius: 40px;
+            background: radial-gradient(circle at center, var(--color-violet), var(--color-black));
+            box-shadow: 0 0 120px rgba(255, 215, 0, 0.2), 0 0 240px rgba(90, 45, 255, 0.2);
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .achievement-box h2 {
+            font-size: 3rem;
+            color: var(--color-gold);
+            letter-spacing: 8px;
+            text-shadow: 0 0 60px rgba(255, 215, 0, 0.3);
+            margin-bottom: 10px;
+        }
+
+        .achievement-box p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1.1rem;
+            letter-spacing: 2px;
+            font-style: italic;
+        }
+
+        .achievement-box .crown {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* --- Effects --- */
+        .chaos-eruption {
+            position: fixed;
+            inset: 0;
+            z-index: 40;
+            pointer-events: none;
+            background: radial-gradient(circle at center, rgba(90, 45, 255, 0.6), rgba(255, 0, 51, 0.3), transparent 70%);
+            animation: chaos-pulse 0.8s ease 3;
+        }
+
+        @keyframes chaos-pulse {
+            0%,
+            100% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        .lightning-flash {
+            position: fixed;
+            inset: 0;
+            z-index: 50;
+            background: rgba(90, 45, 255, 0.4);
+            pointer-events: none;
+            animation: flash 0.15s ease;
+        }
+
+        @keyframes flash {
+            0% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+            }
+        }
+
+        .shake {
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translate(0);
+            }
+            10% {
+                transform: translate(-15px, 8px);
+            }
+            30% {
+                transform: translate(10px, -12px);
+            }
+            50% {
+                transform: translate(-8px, 6px);
+            }
+            70% {
+                transform: translate(6px, -8px);
+            }
+            90% {
+                transform: translate(-4px, 4px);
+            }
+        }
+
+        .favor-popup {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            z-index: 200;
+            padding: 12px 24px;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            animation: favor-pop 1.2s ease forwards;
+            pointer-events: none;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .favor-popup.positive {
+            background: rgba(0, 255, 170, 0.15);
+            color: #00FFAA;
+            border-color: rgba(0, 255, 170, 0.3);
+        }
+
+        .favor-popup.negative {
+            background: rgba(255, 0, 51, 0.15);
+            color: #FF0033;
+            border-color: rgba(255, 0, 51, 0.3);
+        }
+
+        @keyframes favor-pop {
+            0% {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            20% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            80% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+        }
+
+        /* --- Particle Burst --- */
+        .particle-burst {
+            position: fixed;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            .hero-avatar {
+                width: 150px;
+                height: 150px;
+            }
+            .hero-title {
+                letter-spacing: 6px;
+            }
+            .btn-primary {
+                padding: 14px 32px;
+                font-size: 1rem;
+                letter-spacing: 2px;
+            }
+            .topbar {
+                padding: 10px 12px;
+                min-height: 60px;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .topbar-name {
+                font-size: 1rem;
+            }
+            .topbar-status {
+                font-size: 0.6rem;
+            }
+            .topbar-favor {
+                font-size: 0.85rem;
+            }
+            .topbar-favor span {
+                font-size: 1.1rem;
+            }
+            .messages {
+                padding: 12px 10px 80px;
+                gap: 12px;
+            }
+            .message {
+                max-width: 94%;
+                padding: 12px 16px;
+                font-size: 0.9rem;
+            }
+            .input-area {
+                padding: 10px 12px 14px;
+                gap: 8px;
+            }
+            .input-area textarea {
+                font-size: 0.9rem;
+                padding: 10px 14px;
+                min-height: 44px;
+            }
+            .btn-send {
+                width: 48px;
+                height: 48px;
+                font-size: 1.3rem;
+            }
+            .about-card {
+                padding: 24px 18px;
+            }
+            .about-card h1 {
+                font-size: 2rem;
+            }
+            .achievement-box h2 {
+                font-size: 2rem;
+            }
+            .hero-actions {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+            .btn-primary {
+                padding: 12px 24px;
+                font-size: 0.85rem;
+            }
+            .topbar-favor {
+                font-size: 0.7rem;
+            }
+        }
+
+        @media (min-width: 601px) {
+            .hero-actions {
+                flex-direction: row;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============================================================
+    THREE.JS CONTAINER
+    ============================================================ -->
+    <div id="three-container"></div>
+
+    <!-- ============================================================
+    LANDING PAGE
+    ============================================================ -->
+    <section id="landing">
+        <div class="hero-content">
+            <div class="hero-avatar">
+                <div class="avatar-icon">⌛</div>
+            </div>
+            <h1 class="hero-title">KAIROS</h1>
+            <div class="hero-sub">God of Chaos</div>
+            <div class="hero-quote">"Reality is not a law. It is a suggestion."</div>
+            <button class="btn-primary" id="enterVoid">Enter the Void</button>
+            <div class="hero-actions">
+                <button class="btn-secondary" id="goToAbout">About Kairos</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    ABOUT PAGE
+    ============================================================ -->
+    <section id="about">
+        <div class="about-card">
+            <h1>⌛ KAIROS</h1>
+            <div class="sub">The God of Chaos</div>
+            <div class="stat">
+                <span class="label">Name</span>
+                <span class="value">Kairos</span>
+            </div>
+            <div class="stat">
+                <span class="label">Age</span>
+                <span class="value">Older than Time</span>
+            </div>
+            <div class="stat">
+                <span class="label">Realm</span>
+                <span class="value">The Ever-Shifting Void</span>
+            </div>
+            <div class="domains">
+                <span>🌀 Chaos</span>
+                <span>⚡ Fate</span>
+                <span>∞ Possibility</span>
+                <span>🔥 Entropy</span>
+                <span>✨ Transformation</span>
+            </div>
+            <div class="description">
+                "Kairos is the cosmic embodiment of change. He is neither good nor evil.
+                He exists beyond mortal understanding and shapes reality through chaos."
+            </div>
+            <button class="btn-secondary" id="closeAbout" style="width:100%">← Return to the Void</button>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CHAT INTERFACE
+    ============================================================ -->
+    <section id="chat">
+        <!-- Top Bar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="topbar-avatar">⌛</div>
+                <div>
+                    <div class="topbar-name">Kairos</div>
+                    <div class="topbar-status watching" id="statusDisplay">Watching</div>
+                </div>
+            </div>
+            <div class="topbar-favor">
+                <span>👑</span>
+                <span id="favorDisplay">100</span>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages" id="messagesContainer">
+            <div class="message message-kairos">
+                Speak, mortal.
+                <div class="message-time">Kairos · now</div>
+            </div>
+            <div class="typing-indicator" id="typingIndicator">Kairos is contemplating your existence…</div>
+        </div>
+
+        <!-- Input -->
+        <div class="input-area" id="inputArea">
+            <textarea id="userInput" rows="1" placeholder="Speak to the void…" maxlength="500"></textarea>
+            <button class="btn-send" id="sendBtn" aria-label="Send message">✦</button>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    ACHIEVEMENT OVERLAY
+    ============================================================ -->
+    <div id="achievement">
+        <div class="achievement-box">
+            <span class="crown">👑</span>
+            <h2>CHOSEN OF CHAOS</h2>
+            <p>"Among endless worlds, you have earned my attention."</p>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    JAVASCRIPT — COMPLETE APPLICATION (2000+ LINES)
+    ============================================================ -->
+    <script>
+        /**
+         * ================================================================
+         * KAIROS.AI — COMPLETE APPLICATION
+         * Version: 2.0.0
+         * Architecture: Clean, Professional, Production-Ready
+         * ================================================================
+         */
+
+        'use strict';
+
+        // ================================================================
+        // 1. THREE.JS COSMIC BACKGROUND
+        // ================================================================
+        (function initCosmicBackground() {
+            try {
+                const container = document.getElementById('three-container');
+                const scene = new THREE.Scene();
+                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                const renderer = new THREE.WebGLRenderer({
+                    alpha: true,
+                    antialias: true,
+                    powerPreference: 'high-performance'
+                });
+
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+                renderer.setClearColor(0x000000, 0);
+                container.appendChild(renderer.domElement);
+
+                // Particle system
+                const PARTICLE_COUNT = 2000;
+                const positions = new Float32Array(PARTICLE_COUNT * 3);
+                const colors = new Float32Array(PARTICLE_COUNT * 3);
+                const velocities = [];
+
+                const purple = new THREE.Color(0x5A2DFF);
+                const darkPurple = new THREE.Color(0x2A0E4F);
+                const gold = new THREE.Color(0xFFD700);
+
+                for (let i = 0; i < PARTICLE_COUNT; i++) {
+                    const radius = 8 + Math.random() * 40;
+                    const theta = Math.random() * Math.PI * 2;
+                    const phi = Math.acos(2 * Math.random() - 1);
+
+                    positions[i * 3] = radius * Math.sin(phi) * Math.cos(theta);
+                    positions[i * 3 + 1] = radius * Math.sin(phi) * Math.sin(theta) * 0.3;
+                    positions[i * 3 + 2] = radius * Math.cos(phi);
+
+                    const mix = Math.random();
+                    const col = mix < 0.5 ?
+                        purple.clone().lerp(darkPurple, Math.random()) :
+                        gold.clone().lerp(purple, Math.random());
+
+                    colors[i * 3] = col.r;
+                    colors[i * 3 + 1] = col.g;
+                    colors[i * 3 + 2] = col.b;
+
+                    velocities.push({
+                        x: (Math.random() - 0.5) * 0.002,
+                        y: (Math.random() - 0.5) * 0.002,
+                        z: (Math.random() - 0.5) * 0.002
+                    });
+                }
+
+                const geometry = new THREE.BufferGeometry();
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+                const material = new THREE.PointsMaterial({
+                    size: 0.3,
+                    vertexColors: true,
+                    transparent: true,
+                    opacity: 0.8,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                    sizeAttenuation: true
+                });
+
+                const particles = new THREE.Points(geometry, material);
+                scene.add(particles);
+
+                // Background stars
+                const STAR_COUNT = 1000;
+                const starPositions = new Float32Array(STAR_COUNT * 3);
+                for (let i = 0; i < STAR_COUNT * 3; i++) {
+                    starPositions[i] = (Math.random() - 0.5) * 200;
+                }
+
+                const starGeometry = new THREE.BufferGeometry();
+                starGeometry.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
+
+                const starMaterial = new THREE.PointsMaterial({
+                    color: 0x8888ff,
+                    size: 0.15,
+                    transparent: true,
+                    opacity: 0.5,
+                    blending: THREE.AdditiveBlending
+                });
+
+                const stars = new THREE.Points(starGeometry, starMaterial);
+                scene.add(stars);
+
+                camera.position.z = 15;
+
+                let intensity = 1;
+
+                // Animation loop
+                function animate() {
+                    requestAnimationFrame(animate);
+
+                    particles.rotation.y += 0.0003 * intensity;
+                    particles.rotation.x += 0.0001 * intensity;
+                    stars.rotation.y += 0.0001;
+
+                    renderer.render(scene, camera);
+                }
+
+                animate();
+
+                // Resize handler
+                const resizeHandler = function() {
+                    const width = window.innerWidth;
+                    const height = window.innerHeight;
+
+                    camera.aspect = width / height;
+                    camera.updateProjectionMatrix();
+
+                    renderer.setSize(width, height);
+                };
+
+                window.addEventListener('resize', resizeHandler);
+
+                // Expose intensity control
+                window.setCosmicIntensity = function(value) {
+                    intensity = Math.max(0.3, Math.min(2, value));
+                    material.opacity = 0.5 + intensity * 0.3;
+                };
+
+                // Cleanup function
+                window.__cleanupCosmic = function() {
+                    window.removeEventListener('resize', resizeHandler);
+                    renderer.dispose();
+                    geometry.dispose();
+                    material.dispose();
+                    starGeometry.dispose();
+                    starMaterial.dispose();
+                };
+
+                console.log('🌌 Cosmic background initialized');
+
+            } catch (error) {
+                console.warn('WebGL/Three.js unavailable:', error.message);
+                const container = document.getElementById('three-container');
+                if (container) {
+                    container.innerHTML =
+                        '<div style="color:var(--color-void);padding:20px;text-align:center;font-size:0.8rem">⚡ Cosmic background unavailable</div>';
+                }
+            }
+        })();
+
+        // ================================================================
+        // 2. KAIROS AI ENGINE
+        // ================================================================
+        class KairosAI {
+            /**
+             * Initialize the Kairos AI with memory persistence
+             */
+            constructor() {
+                this.storageKey = 'kairos_ai_memory_v2';
+                this.memory = this.loadMemory();
+
+                // Core state
+                this.favor = this.memory.favor ?? 100;
+                this.userName = this.memory.userName ?? null;
+                this.history = this.memory.history ?? [];
+                this.achievements = this.memory.achievements ?? [];
+                this.totalInteractions = this.memory.totalInteractions ?? 0;
+                this.chaosEvents = this.memory.chaosEvents ?? 0;
+                this.isWrathMode = false;
+
+                // Response templates
+                this.responses = {
+                    calm: {
+                        greetings: [
+                            "Speak, mortal.",
+                            "You stand before chaos itself. Proceed.",
+                            "The void listens. What do you seek?",
+                            "I have witnessed the birth of stars. Your words are but whispers, yet I hear.",
+                            "State your purpose, or be consumed by silence."
+                        ],
+                        thoughtful: [
+                            "An interesting notion...",
+                            "You speak of things that ripple through fate.",
+                            "I have considered such possibilities across millennia.",
+                            "Curious. Your mind wanders paths few have trodden.",
+                            "The threads of chaos twist at your words."
+                        ],
+                        amused: [
+                            "A low, cosmic chuckle echoes through the void.",
+                            "You entertain me, mortal.",
+                            "Amusing. Most amusing.",
+                            "I have not been so entertained since the fall of empires.",
+                            "Your audacity is... refreshing."
+                        ],
+                        interested: [
+                            "You have my attention. Continue.",
+                            "This... this is unexpected.",
+                            "Your words carve new patterns in the void.",
+                            "I see potential in you. Rare.",
+                            "Speak more. I wish to understand your chaos."
+                        ]
+                    },
+                    displeased: {
+                        warnings: [
+                            "Tread carefully.",
+                            "I am not amused.",
+                            "Your insolence has been noted.",
+                            "The darkness grows restless.",
+                            "You would do well to remember who you speak to."
+                        ],
+                        greetings: [
+                            "You test my patience.",
+                            "Your words grow tiresome.",
+                            "I have existed before your ancestors crawled from the mud. Show respect.",
+                            "The void does not tolerate foolishness.",
+                            "You walk a dangerous path, mortal."
+                        ]
+                    },
+                    furious: {
+                        wrath: [
+                            "BEGONE. RETURN WHEN WISDOM FINDS YOU.",
+                            "I WILL ERASE YOUR NAME FROM THE TAPESTRY OF FATE.",
+                            "THE COSMOS WEEPS AT YOUR FOOLISHNESS.",
+                            "You have awakened something you cannot control.",
+                            "CHAOS CONSUMES ALL WHO CHALLENGE IT."
+                        ]
+                    }
+                };
+
+                this.rareResponses = [
+                    "For a moment... even I did not foresee that.",
+                    "The threads of fate tremble at your words. Intriguing.",
+                    "Across all realities, you are... unique.",
+                    "I have seen the end of time, yet you surprise me.",
+                    "The void whispers your name. Curious."
+                ];
+
+                // Save initial state
+                this.saveMemory();
+
+                console.log('⌛ Kairos AI initialized with favor:', this.favor);
+            }
+
+            /**
+             * Load memory from localStorage
+             */
+            loadMemory() {
+                try {
+                    const data = localStorage.getItem(this.storageKey);
+                    if (data) {
+                        return JSON.parse(data);
+                    }
+                } catch (error) {
+                    console.warn('Memory load failed:', error.message);
+                }
+                return {};
+            }
+
+            /**
+             * Save memory to localStorage
+             */
+            saveMemory() {
+                try {
+                    const data = {
+                        favor: this.favor,
+                        userName: this.userName,
+                        history: this.history.slice(-50),
+                        achievements: this.achievements,
+                        totalInteractions: this.totalInteractions,
+                        chaosEvents: this.chaosEvents,
+                        lastSaved: Date.now()
+                    };
+                    localStorage.setItem(this.storageKey, JSON.stringify(data));
+                } catch (error) {
+                    console.warn('Memory save failed:', error.message);
+                }
+            }
+
+            /**
+             * Get current mood based on favor
+             */
+            getMood() {
+                if (this.favor >= 80) return 'calm';
+                if (this.favor >= 60) return 'interested';
+                if (this.favor >= 40) return 'amused';
+                if (this.favor >= 20) return 'displeased';
+                if (this.favor >= 1) return 'furious';
+                return 'wrath';
+            }
+
+            /**
+             * Get display status text
+             */
+            getStatusText() {
+                const map = {
+                    calm: 'Watching',
+                    interested: 'Interested',
+                    amused: 'Amused',
+                    displeased: 'Displeased',
+                    furious: 'Furious',
+                    wrath: 'Furious'
+                };
+                return map[this.getMood()] || 'Watching';
+            }
+
+            /**
+             * Analyze user message for sentiment
+             */
+            analyzeMessage(text) {
+                const lower = text.toLowerCase();
+                let score = 0;
+
+                const keywords = {
+                    respectful: ['please', 'thank', 'grateful', 'appreciate', 'respect', 'honor', 'mighty', 'lord',
+                        'divine', 'great', 'wise'
+                    ],
+                    interesting: ['chaos', 'fate', 'void', 'cosmos', 'universe', 'reality', 'existence', 'infinite',
+                        'eternal', 'beyond', 'philosophy'
+                    ],
+                    insulting: ['stupid', 'dumb', 'fool', 'idiot', 'joke', 'pathetic', 'weak', 'worthless', 'useless',
+                        'failure'
+                    ],
+                    trivial: ['lol', 'omg', 'bruh', 'bro', 'dude', 'cringe', 'meme', 'what', 'huh', 'ok']
+                };
+
+                keywords.respectful.forEach(w => { if (lower.includes(w)) score += 5; });
+                keywords.interesting.forEach(w => { if (lower.includes(w)) score += 10; });
+                keywords.insulting.forEach(w => { if (lower.includes(w)) score -= 20; });
+                keywords.trivial.forEach(w => { if (lower.includes(w)) score -= 10; });
+
+                if (text.split(' ').length > 20) score += 5;
+                if (text.includes('?')) score += 3;
+
+                if (score >= 10) return { score, type: 'interesting' };
+                if (score >= 5) return { score, type: 'respectful' };
+                if (score <= -20) return { score, type: 'insulting' };
+                if (score <= -5) return { score, type: 'trivial' };
+                return { score, type: 'neutral' };
+            }
+
+            /**
+             * Process user message and generate response
+             */
+            processMessage(text) {
+                this.totalInteractions++;
+                const analysis = this.analyzeMessage(text);
+
+                // Calculate favor change
+                let change = 0;
+                switch (analysis.type) {
+                    case 'respectful':
+                        change = 5;
+                        break;
+                    case 'interesting':
+                        change = 10;
+                        break;
+                    case 'insulting':
+                        change = -20;
+                        break;
+                    case 'trivial':
+                        change = -10;
+                        break;
+                    default:
+                        change = 2;
+                }
+
+                // Clamp favor
+                this.favor = Math.max(0, Math.min(150, this.favor + change));
+
+                // Check for rare response
+                const isRare = Math.random() < 0.01;
+
+                // Check for achievement
+                if (this.favor >= 150 && !this.achievements.includes('CHOSEN_OF_CHAOS')) {
+                    this.achievements.push('CHOSEN_OF_CHAOS');
+                    this.triggerAchievement();
+                }
+
+                // Trigger wrath at 0 favor
+                if (this.favor === 0) {
+                    this.triggerWrath();
+                }
+
+                // Generate response
+                const mood = this.getMood();
+                let response = this.generateResponse(text, mood, analysis, isRare);
+
+                // Extract user name if provided
+                if (!this.userName) {
+                    const namePatterns = [
+                        /my name is (\w+)/i,
+                        /i am (\w+)/i,
+                        /call me (\w+)/i,
+                        /(\w+) is my name/i
+                    ];
+
+                    for (const pattern of namePatterns) {
+                        const match = text.match(pattern);
+                        if (match) {
+                            this.userName = match[1];
+                            response =
+                            `I shall remember you as ${this.userName}. ${response}`;
+                            break;
+                        }
+                    }
+                }
+
+                // Store in history
+                this.history.push({
+                    user: text,
+                    kairos: response,
+                    favor: this.favor,
+                    mood: mood,
+                    timestamp: Date.now()
+                });
+
+                // Trim history
+                if (this.history.length > 50) {
+                    this.history = this.history.slice(-50);
+                }
+
+                this.saveMemory();
+
+                // Update cosmic intensity
+                const intensity = 0.3 + (this.favor / 150) * 1.2;
+                if (window.setCosmicIntensity) {
+                    window.setCosmicIntensity(intensity);
+                }
+
+                return {
+                    response,
+                    change,
+                    newFavor: this.favor,
+                    mood,
+                    status: this.getStatusText(),
+                    isRare,
+                    isWrath: this.isWrathMode
+                };
+            }
+
+            /**
+             * Generate a response based on mood and analysis
+             */
+            generateResponse(text, mood, analysis, isRare) {
+                // Wrath mode override
+                if (this.favor === 0) {
+                    const wrath = this.responses.furious.wrath;
+                    return wrath[Math.floor(Math.random() * wrath.length)];
+                }
+
+                // Rare response
+                if (isRare) {
+                    return this.rareResponses[Math.floor(Math.random() * this.rareResponses.length)];
+                }
+
+                // Select response pool
+                let pool;
+                const moodState = this.getMood();
+
+                if (moodState === 'calm' || moodState === 'interested' || moodState === 'amused') {
+                    if (analysis.type === 'insulting' || analysis.type === 'trivial') {
+                        pool = this.responses.displeased.warnings;
+                    } else if (analysis.type === 'interesting') {
+                        pool = this.responses.calm.interesting;
+                    } else if (analysis.type === 'respectful') {
+                        pool = this.responses.calm.amused;
+                    } else {
+                        pool = this.responses.calm.thoughtful;
+                    }
+                } else if (moodState === 'displeased') {
+                    if (analysis.type === 'insulting' || analysis.type === 'trivial') {
+                        pool = this.responses.displeased.warnings;
+                    } else if (analysis.type === 'interesting' || analysis.type === 'respectful') {
+                        pool = this.responses.calm.thoughtful;
+                    } else {
+                        pool = this.responses.displeased.greetings;
+                    }
+                } else if (moodState === 'furious' || moodState === 'wrath') {
+                    pool = this.responses.furious.wrath;
+                } else {
+                    pool = this.responses.calm.greetings;
+                }
+
+                let response = pool[Math.floor(Math.random() * pool.length)];
+
+                // Personalize with name
+                if (this.userName && this.history.length > 2 && Math.random() < 0.3) {
+                    const namePrefixes = [
+                        `Ah, ${this.userName}... `,
+                        `${this.userName}, `,
+                        `Listen, ${this.userName}... `
+                    ];
+                    response = namePrefixes[Math.floor(Math.random() * namePrefixes.length)] + response.toLowerCase();
+                }
+
+                // Reference history
+                if (this.history.length > 3 && Math.random() < 0.2) {
+                    const recent = this.history[Math.floor(Math.random() * Math.min(5, this.history.length))];
+                    if (recent && recent.user && recent.user.length > 5) {
+                        const refs = [
+                            ` You spoke of "${recent.user.slice(0, 20)}..."`,
+                            ` I recall when you mentioned "${recent.user.slice(0, 20)}..."`,
+                            ` You previously said "${recent.user.slice(0, 25)}..."`
+                        ];
+                        response += refs[Math.floor(Math.random() * refs.length)];
+                    }
+                }
+
+                return response;
+            }
+
+            /**
+             * Trigger achievement display
+             */
+            triggerAchievement() {
+                const element = document.getElementById('achievement');
+                if (element) {
+                    element.classList.add('active');
+                    setTimeout(() => {
+                        element.classList.remove('active');
+                    }, 4000);
+                }
+
+                // Play sound
+                try {
+                    const audioContext = new(window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gain = audioContext.createGain();
+
+                    oscillator.connect(gain);
+                    gain.connect(audioContext.destination);
+
+                    oscillator.type = 'sine';
+                    oscillator.frequency.setValueAtTime(523, audioContext.currentTime);
+                    oscillator.frequency.setValueAtTime(659, audioContext.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(784, audioContext.currentTime + 0.2);
+
+                    gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                } catch (error) {
+                    // Silent fallback
+                }
+            }
+
+            /**
+             * Trigger Divine Wrath mode
+             */
+            triggerWrath() {
+                if (this.isWrathMode) return;
+
+                this.isWrathMode = true;
+                const inputArea = document.getElementById('inputArea');
+                const sendBtn = document.getElementById('sendBtn');
+                const userInput = document.getElementById('userInput');
+                const chat = document.getElementById('chat');
+
+                // Lock input
+                if (inputArea) inputArea.classList.add('locked');
+                if (sendBtn) sendBtn.disabled = true;
+                if (userInput) userInput.disabled = true;
+
+                // Shake effect
+                if (chat) chat.classList.add('shake');
+
+                // Lightning flashes
+                for (let i = 0; i < 3; i++) {
+                    setTimeout(() => {
+                        const flash = document.createElement('div');
+                        flash.className = 'lightning-flash';
+                        document.body.appendChild(flash);
+                        setTimeout(() => flash.remove(), 200);
+                    }, i * 300);
+                }
+
+                // Chaos eruption
+                const eruption = document.createElement('div');
+                eruption.className = 'chaos-eruption';
+                document.body.appendChild(eruption);
+                setTimeout(() => eruption.remove(), 3000);
+
+                // Darken messages
+                const messages = document.querySelector('.messages');
+                if (messages) {
+                    messages.style.transition = 'filter 1s';
+                    messages.style.filter = 'brightness(0.3)';
+                }
+
+                // Unlock after 10 seconds
+                setTimeout(() => {
+                    if (inputArea) inputArea.classList.remove('locked');
+                    if (sendBtn) sendBtn.disabled = false;
+                    if (userInput) userInput.disabled = false;
+                    if (chat) chat.classList.remove('shake');
+                    if (messages) {
+                        messages.style.filter = 'brightness(1)';
+                    }
+                    this.isWrathMode = false;
+                }, 10000);
+            }
+
+            /**
+             * Speak the response using Speech Synthesis
+             */
+            speak(text) {
+                if (!window.speechSynthesis) return;
+
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+
+                const utterance = new SpeechSynthesisUtterance(text);
+                const mood = this.getMood();
+
+                // Adjust voice parameters
+                utterance.rate = 0.8 + (this.favor / 500);
+                utterance.pitch = 0.4 + (this.favor / 300);
+                utterance.volume = 0.8;
+
+                if (mood === 'furious' || mood === 'wrath') {
+                    utterance.pitch = 0.2;
+                    utterance.rate = 0.6;
+                    utterance.volume = 1;
+                } else if (mood === 'displeased') {
+                    utterance.pitch = 0.3;
+                    utterance.rate = 0.7;
+                    utterance.volume = 0.9;
+                }
+
+                // Find deep voice
+                const voices = window.speechSynthesis.getVoices();
+                const deepVoice = voices.find(v =>
+                    v.name.toLowerCase().includes('deep') ||
+                    v.name.toLowerCase().includes('daniel') ||
+                    v.name.toLowerCase().includes('david')
+                );
+
+                if (deepVoice) {
+                    utterance.voice = deepVoice;
+                }
+
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        // ================================================================
+        // 3. CHAT APPLICATION CONTROLLER
+        // ================================================================
+        class KairosChat {
+            /**
+             * Initialize chat application
+             */
+            constructor() {
+                this.ai = new KairosAI();
+
+                // DOM references
+                this.messagesContainer = document.getElementById('messagesContainer');
+                this.userInput = document.getElementById('userInput');
+                this.sendBtn = document.getElementById('sendBtn');
+                this.statusDisplay = document.getElementById('statusDisplay');
+                this.favorDisplay = document.getElementById('favorDisplay');
+                this.typingIndicator = document.getElementById('typingIndicator');
+
+                this.isProcessing = false;
+                this.setupEventListeners();
+                this.updateUI();
+                this.addWelcomeMessage();
+
+                // Preload voices
+                if (window.speechSynthesis) {
+                    window.speechSynthesis.getVoices();
+                    window.speechSynthesis.onvoiceschanged = () => {
+                        window.speechSynthesis.getVoices();
+                    };
+                }
+
+                console.log('💬 Chat interface ready');
+            }
+
+            /**
+             * Set up event listeners
+             */
+            setupEventListeners() {
+                // Send button
+                this.sendBtn.addEventListener('click', () => {
+                    this.sendMessage();
+                });
+
+                // Enter key (Shift+Enter for new line)
+                this.userInput.addEventListener('keydown', (event) => {
+                    if (event.key === 'Enter' && !event.shiftKey) {
+                        event.preventDefault();
+                        this.sendMessage();
+                    }
+                });
+
+                // Auto-resize textarea
+                this.userInput.addEventListener('input', () => {
+                    this.userInput.style.height = 'auto';
+                    this.userInput.style.height = Math.min(this.userInput.scrollHeight, 120) + 'px';
+                });
+
+                // Focus input
+                this.userInput.focus();
+
+                // Touch focus for mobile
+                document.addEventListener('touchstart', () => {
+                    if (this.userInput && !this.userInput.disabled) {
+                        this.userInput.focus();
+                    }
+                });
+            }
+
+            /**
+             * Add welcome message
+             */
+            addWelcomeMessage() {
+                let welcome = "Speak, mortal.";
+
+                if (this.ai.userName) {
+                    welcome = `Ah, ${this.ai.userName}... you return.`;
+
+                    if (this.ai.history.length > 1) {
+                        const last = this.ai.history[this.ai.history.length - 2];
+                        if (last && last.user) {
+                            welcome += ` Last time you spoke of "${last.user.slice(0, 30)}"...`;
+                        }
+                    }
+                }
+
+                this.addMessage(welcome, 'kairos');
+            }
+
+            /**
+             * Send a message
+             */
+            async sendMessage() {
+                const text = this.userInput.value.trim();
+
+                if (!text || this.isProcessing) return;
+
+                // Check if locked (wrath mode)
+                if (document.getElementById('inputArea').classList.contains('locked')) {
+                    this.addMessage("The void is silent. Wait for your judgment to pass.", 'kairos');
+                    return;
+                }
+
+                this.isProcessing = true;
+                this.userInput.value = '';
+                this.userInput.style.height = 'auto';
+                this.userInput.disabled = true;
+                this.sendBtn.disabled = true;
+
+                // Add user message
+                this.addMessage(text, 'user');
+
+                // Show typing indicator
+                this.typingIndicator.classList.add('active');
+
+                // Simulate thinking (500-2000ms)
+                const thinkTime = 500 + Math.random() * 1500;
+                await new Promise(resolve => setTimeout(resolve, thinkTime));
+
+                // Process with AI
+                const result = this.ai.processMessage(text);
+
+                // Hide typing indicator
+                this.typingIndicator.classList.remove('active');
+
+                // Add Kairos response
+                this.addMessage(result.response, 'kairos');
+
+                // Speak response
+                this.ai.speak(result.response);
+
+                // Update UI
+                this.updateUI(result);
+
+                // Trigger chaos event if favor dropped significantly
+                if (result.change <= -10 && Math.random() < 0.3) {
+                    this.triggerChaosEvent();
+                }
+
+                this.isProcessing = false;
+                this.userInput.disabled = false;
+                this.sendBtn.disabled = false;
+                this.userInput.focus();
+            }
+
+            /**
+             * Add a message to the chat
+             */
+            addMessage(text, sender) {
+                const message = document.createElement('div');
+                message.className = `message message-${sender}`;
+
+                const content = document.createElement('span');
+                content.textContent = text;
+                message.appendChild(content);
+
+                const time = document.createElement('div');
+                time.className = 'message-time';
+                const now = new Date();
+                time.textContent =
+                    `${sender === 'kairos' ? 'Kairos' : 'You'} · ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                message.appendChild(time);
+
+                // Particle burst for Kairos messages
+                if (sender === 'kairos') {
+                    message.style.animation = 'message-fade 0.8s ease forwards';
+                    this.createParticleBurst(message);
+                }
+
+                this.messagesContainer.appendChild(message);
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+
+            /**
+             * Create particle burst effect
+             */
+            createParticleBurst(element) {
+                const colors = ['#5A2DFF', '#FFD700', '#2A0E4F', '#FFFFFF'];
+                const rect = element.getBoundingClientRect();
+                const x = rect.left + rect.width / 2;
+                const y = rect.top + rect.height / 2;
+
+                for (let i = 0; i < 12; i++) {
+                    const particle = document.createElement('div');
+                    const size = 3 + Math.random() * 6;
+
+                    particle.style.cssText = `
+                        position: fixed;
+                        width: ${size}px;
+                        height: ${size}px;
+                        background: ${colors[Math.floor(Math.random() * colors.length)]};
+                        border-radius: 50%;
+                        pointer-events: none;
+                        z-index: 100;
+                        left: ${x}px;
+                        top: ${y}px;
+                        box-shadow: 0 0 10px rgba(90, 45, 255, 0.5);
+                        transition: all 1s ease-out;
+                        opacity: 1;
+                    `;
+
+                    document.body.appendChild(particle);
+
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 50 + Math.random() * 100;
+                    const dx = Math.cos(angle) * distance;
+                    const dy = Math.sin(angle) * distance - 30;
+
+                    requestAnimationFrame(() => {
+                        particle.style.transform = `translate(${dx}px, ${dy}px) scale(0)`;
+                        particle.style.opacity = '0';
+                    });
+
+                    setTimeout(() => particle.remove(), 1000);
+                }
+            }
+
+            /**
+             * Trigger chaos event
+             */
+            triggerChaosEvent() {
+                const chat = document.getElementById('chat');
+                if (chat) chat.classList.add('shake');
+
+                setTimeout(() => {
+                    const flash = document.createElement('div');
+                    flash.className = 'lightning-flash';
+                    document.body.appendChild(flash);
+                    setTimeout(() => flash.remove(), 200);
+                }, 100);
+
+                const surge = document.createElement('div');
+                surge.style.cssText = `
+                    position: fixed;
+                    inset: 0;
+                    z-index: 30;
+                    background: radial-gradient(circle at center, rgba(90, 45, 255, 0.3), transparent 70%);
+                    pointer-events: none;
+                    animation: chaos-pulse 0.8s ease 2;
+                `;
+                document.body.appendChild(surge);
+                setTimeout(() => surge.remove(), 1600);
+
+                setTimeout(() => {
+                    if (chat) chat.classList.remove('shake');
+                }, 500);
+
+                this.ai.chaosEvents++;
+                this.ai.saveMemory();
+            }
+
+            /**
+             * Update UI elements
+             */
+            updateUI(result) {
+                // Update status
+                const statusText = this.ai.getStatusText();
+                const statusClass = this.ai.getStatusText().toLowerCase();
+                this.statusDisplay.textContent = statusText;
+                this.statusDisplay.className = `topbar-status ${statusClass}`;
+
+                // Update favor
+                this.favorDisplay.textContent = this.ai.favor;
+
+                // Show favor popup
+                if (result && result.change !== 0) {
+                    const popup = document.createElement('div');
+                    const isPositive = result.change > 0;
+                    popup.className = `favor-popup ${isPositive ? 'positive' : 'negative'}`;
+                    popup.textContent =
+                        `${isPositive ? '✦' : '✧'} ${isPositive ? '+' : ''}${result.change} Divine Favor`;
+                    document.body.appendChild(popup);
+                    setTimeout(() => popup.remove(), 1200);
+                }
+
+                // Update cosmic intensity
+                const intensity = 0.3 + (this.ai.favor / 150) * 1.2;
+                if (window.setCosmicIntensity) {
+                    window.setCosmicIntensity(intensity);
+                }
+
+                // Update background darkness
+                const darkness = 1 - (this.ai.favor / 150) * 0.4;
+                const bg = document.getElementById('chat-bg');
+                if (bg) {
+                    bg.style.backgroundColor = `rgba(0, 0, 0, ${darkness})`;
+                }
+            }
+        }
+
+        // ================================================================
+        // 4. APPLICATION INITIALIZATION
+        // ================================================================
+        let chatApp = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🌙 Kairos.AI — Application Starting');
+
+            // DOM references
+            const landing = document.getElementById('landing');
+            const chat = document.getElementById('chat');
+            const about = document.getElementById('about');
+            const enterVoid = document.getElementById('enterVoid');
+            const goToAbout = document.getElementById('goToAbout');
+            const closeAbout = document.getElementById('closeAbout');
+
+            // Enter the Void
+            enterVoid.addEventListener('click', function() {
+                // Transition
+                landing.classList.add('hidden');
+                chat.classList.add('active');
+
+                // Initialize chat
+                chatApp = new KairosChat();
+
+                // Visual effects
+                const flash = document.createElement('div');
+                flash.className = 'lightning-flash';
+                document.body.appendChild(flash);
+                setTimeout(() => flash.remove(), 300);
+
+                const surge = document.createElement('div');
+                surge.style.cssText = `
+                    position: fixed;
+                    inset: 0;
+                    z-index: 20;
+                    background: radial-gradient(circle at center, rgba(90, 45, 255, 0.4), transparent 70%);
+                    pointer-events: none;
+                    animation: chaos-pulse 0.8s ease 1;
+                `;
+                document.body.appendChild(surge);
+                setTimeout(() => surge.remove(), 800);
+
+                console.log('👁️ Entered the Void');
+            });
+
+            // About page
+            goToAbout.addEventListener('click', function() {
+                about.classList.add('active');
+            });
+
+            closeAbout.addEventListener('click', function() {
+                about.classList.remove('active');
+            });
+
+            // ESC to close about
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && about.classList.contains('active')) {
+                    about.classList.remove('active');
+                }
+            });
+
+            // Save memory on page unload
+            window.addEventListener('beforeunload', function() {
+                if (chatApp) {
+                    chatApp.ai.saveMemory();
+                }
+            });
+
+            // Save memory on visibility change
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden && chatApp) {
+                    chatApp.ai.saveMemory();
+                }
+            });
+
+            console.log('✅ Kairos.AI — All systems ready');
+            console.log('🌟 Enter the void to begin your journey');
+            console.log('👑 Divine Favor awaits...');
         });
-} catch (err) {
-    console.error("WebGL not supported");
-}
 
-10. FILE IS INCOMPLETE
-
-Problem:
-The HTML ends before:
-- KairosAI class finishes
-- Event listeners finish
-- Script finishes
-- </script>
-- </body>
-- </html>
-
-Result:
-The page will not run.
-
-Biggest error causing failure right now:
-
-The JavaScript is cut off in the middle of:
-
-"I have not been so entertained since the fall of
-
-Everything after that is missing.
-
-So the file as pasted is not valid and will not run until the missing JavaScript is restored.
+        // ================================================================
+        // END OF APPLICATION — 2000+ LINES
+        // ================================================================
+        console.log('📊 Kairos.AI — Complete (2000+ lines)');
+        console.log('🔮 The void awaits...');
+    </script>
+</body>
+</html>
