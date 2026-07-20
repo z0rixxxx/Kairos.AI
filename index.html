@@ -2,1785 +2,2220 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>⚡ Anime RPG Deluxe</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OBI Tire Inventory</title>
+
+    <!-- ============================================================
+    STYLES
+    ============================================================ -->
     <style>
-        /* ========== GLOBAL RESET ========== */
-        * {
+        /* ---------- RESET & BASE ---------- */
+        *,
+        *::before,
+        *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            touch-action: none;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
+        }
+        :root {
+            --gold: #d4a843;
+            --gold-light: #f0d080;
+            --gold-dark: #b8922f;
+            --gold-glow: rgba(212, 168, 67, 0.3);
+            --bg: #0a0a0a;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --border-glass: rgba(255, 255, 255, 0.08);
+            --text: #f0f0f0;
+            --text-muted: #aaa;
+            --shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
         }
         body {
-            overflow: hidden;
-            background: #0a0a1a;
-            font-family: 'Segoe UI', Arial, sans-serif;
-            position: fixed;
-            width: 100%;
-            height: 100%;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.5;
         }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a1a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
         }
 
-        /* ========== HUD (Top Left) ========== */
-        #hud {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            pointer-events: none;
-            z-index: 10;
+        /* ---------- UTILITY ---------- */
+        .gold-text {
+            color: var(--gold);
         }
-        .bar-wrap {
-            width: 160px;
-            height: 12px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 8px;
-            margin-bottom: 4px;
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
-            overflow: hidden;
-            backdrop-filter: blur(4px);
+        .gold-border {
+            border-color: var(--gold);
         }
-        .bar-fill {
-            height: 100%;
-            border-radius: 8px;
-            transition: width 0.1s ease;
+        .gold-bg {
+            background: var(--gold);
+            color: #0a0a0a;
         }
-        #hp-fill {
-            background: linear-gradient(90deg, #ff1a4a, #ff4d7a);
-            box-shadow: 0 0 12px #ff1a4a88;
+        .glass {
+            background: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
         }
-        #stam-fill {
-            background: linear-gradient(90deg, #00ccff, #66e5ff);
-            box-shadow: 0 0 12px #00ccff88;
+        .glass-sm {
+            border-radius: var(--radius-sm);
         }
-        #energy-fill {
-            background: linear-gradient(90deg, #cc44ff, #e880ff);
-            box-shadow: 0 0 12px #cc44ff88;
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 22px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            background: var(--bg-card);
+            color: var(--text);
+            border: 1px solid var(--border-glass);
         }
-        .label {
-            color: #fff;
-            font-size: 9px;
-            font-weight: 700;
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+        }
+        .btn:active {
+            transform: scale(0.97);
+        }
+        .btn-gold {
+            background: var(--gold);
+            color: #0a0a0a;
+            border-color: var(--gold);
+        }
+        .btn-gold:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+        }
+        .btn-outline-gold {
+            background: transparent;
+            color: var(--gold);
+            border-color: var(--gold);
+        }
+        .btn-outline-gold:hover {
+            background: var(--gold);
+            color: #0a0a0a;
+        }
+        .btn-danger {
+            background: rgba(220, 50, 50, 0.15);
+            color: #ff6b6b;
+            border-color: rgba(220, 50, 50, 0.2);
+        }
+        .btn-danger:hover {
+            background: rgba(220, 50, 50, 0.3);
+        }
+        .btn-success {
+            background: rgba(50, 200, 100, 0.15);
+            color: #4ade80;
+            border-color: rgba(50, 200, 100, 0.2);
+        }
+        .btn-success:hover {
+            background: rgba(50, 200, 100, 0.3);
+        }
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+        }
+        .btn-icon {
+            width: 38px;
+            height: 38px;
+            padding: 0;
+            border-radius: 50%;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .input-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            text-shadow: 0 0 8px #000;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 4px;
         }
-        #combo-display {
-            position: absolute;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #fff;
-            font-size: 26px;
-            font-weight: 900;
-            text-shadow: 0 0 30px #ff3366, 0 0 60px #ff336644;
-            opacity: 0;
-            transition: opacity 0.15s;
-            pointer-events: none;
-            z-index: 10;
-            letter-spacing: 2px;
+        .input-group input,
+        .input-group select {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            outline: none;
+            width: 100%;
         }
-        #combo-display.active {
-            opacity: 1;
+        .input-group input:focus,
+        .input-group select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-glow);
         }
-        #lockon-indicator {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #ffdd44;
-            font-size: 28px;
-            font-weight: 900;
-            text-shadow: 0 0 30px #ffdd44;
-            pointer-events: none;
-            z-index: 5;
-            opacity: 0;
-            transition: opacity 0.2s;
+        .input-group input::placeholder {
+            color: #666;
         }
-        #lockon-indicator.active {
-            opacity: 1;
+        select option {
+            background: #1a1a1a;
+            color: var(--text);
         }
 
-        /* ========== TOUCH CONTROLS ========== */
-        #touch-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 20;
-            pointer-events: none;
-        }
-        #touch-layer>* {
-            pointer-events: auto;
-        }
-        #joystick-area {
-            position: absolute;
-            bottom: 100px;
-            left: 30px;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-            border: 2px solid rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(6px);
-            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-        }
-        #joystick-knob {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: radial-gradient(circle, #88ddff, #3399cc);
-            transform: translate(-50%, -50%);
-            box-shadow: 0 0 25px #44aaff88;
-        }
-        #camera-drag {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 55%;
-            height: 100%;
-            background: transparent;
-        }
-        #btn-group {
-            position: absolute;
-            bottom: 110px;
-            right: 12px;
+        /* ---------- STARTUP OVERLAY ---------- */
+        #startup-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: var(--bg);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
         }
-        .btn-row {
-            display: flex;
-            gap: 8px;
+        #startup-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
-        .action-btn {
-            width: 52px;
-            height: 52px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            color: #fff;
-            font-size: 18px;
-            font-weight: 700;
+        .startup-tire {
+            width: 140px;
+            height: 140px;
+            animation: spinTire 1.6s ease-in-out infinite;
+            margin-bottom: 30px;
+            filter: drop-shadow(0 0 40px var(--gold-glow));
+        }
+        .startup-tire svg {
+            width: 100%;
+            height: 100%;
+        }
+        @keyframes spinTire {
+            0% {
+                transform: rotate(0deg) scale(0.8);
+                opacity: 0.4;
+            }
+            50% {
+                transform: rotate(360deg) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: rotate(720deg) scale(0.8);
+                opacity: 0.4;
+            }
+        }
+        .startup-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-shadow: 0 0 60px var(--gold-glow);
+            margin-bottom: 8px;
+        }
+        .startup-sub {
+            font-size: 1rem;
+            color: var(--text-muted);
+            letter-spacing: 6px;
+            text-transform: uppercase;
+        }
+        .startup-loader {
+            margin-top: 30px;
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .startup-loader::after {
+            content: '';
+            display: block;
+            width: 40%;
+            height: 100%;
+            background: var(--gold);
+            border-radius: 4px;
+            animation: loadBar 1.6s ease-in-out infinite;
+        }
+        @keyframes loadBar {
+            0% {
+                transform: translateX(-100%);
+            }
+            100% {
+                transform: translateX(350%);
+            }
+        }
+
+        /* ---------- LOGIN PAGE ---------- */
+        #login-page {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
-            transition: transform 0.05s, background 0.05s;
+            background: var(--bg);
+            padding: 20px;
+            transition: opacity 0.6s ease, visibility 0.6s ease;
         }
-        .action-btn:active,
-        .action-btn.pressed {
-            transform: scale(0.85);
-            background: rgba(255, 255, 255, 0.2);
+        #login-page.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
         }
-        #btn-attack {
-            background: rgba(255, 50, 50, 0.5);
-            border-color: #ff4444;
-            font-size: 22px;
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 36px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            animation: fadeUp 0.8s ease;
         }
-        #btn-heavy {
-            background: rgba(255, 150, 0, 0.5);
-            border-color: #ff8800;
-            font-size: 22px;
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        #btn-jump {
-            background: rgba(50, 200, 255, 0.5);
-            border-color: #44ddff;
-        }
-        #btn-dash {
-            background: rgba(0, 255, 200, 0.4);
-            border-color: #44ffcc;
-        }
-        #btn-ability {
-            background: rgba(180, 50, 255, 0.5);
-            border-color: #aa44ff;
-            font-size: 16px;
-        }
-        #btn-lock {
-            background: rgba(255, 200, 0, 0.4);
-            border-color: #ffdd44;
-            font-size: 14px;
-            width: 44px;
-            height: 44px;
-        }
-        #btn-parry {
-            background: rgba(0, 200, 255, 0.4);
-            border-color: #44ddff;
-            font-size: 14px;
-            width: 44px;
-            height: 44px;
-        }
-        #btn-inv {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.2);
-            font-size: 14px;
-            width: 44px;
-            height: 44px;
-        }
-        .small-btn {
-            width: 44px;
-            height: 44px;
-            font-size: 14px;
-        }
-
-        /* ========== UI PANELS ========== */
-        .panel {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(10, 10, 30, 0.92);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 20px;
-            padding: 24px;
-            color: #fff;
-            z-index: 30;
-            min-width: 320px;
-            max-height: 80vh;
-            overflow-y: auto;
-            display: none;
-            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
-            pointer-events: auto;
-        }
-        .panel.active {
-            display: block;
-        }
-        .panel h2 {
+        .login-logo {
             text-align: center;
-            margin-bottom: 16px;
-            font-weight: 300;
+            margin-bottom: 32px;
+        }
+        .login-logo svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 8px;
+        }
+        .login-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 2px;
+        }
+        .login-logo p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            font-size: 22px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 10px;
         }
-        .panel-close {
-            position: absolute;
-            top: 10px;
-            right: 16px;
-            font-size: 24px;
-            cursor: pointer;
-            color: rgba(255, 255, 255, 0.4);
-            transition: color 0.2s;
-            background: none;
-            border: none;
-        }
-        .panel-close:hover {
-            color: #fff;
-        }
-        .skill-node {
+        .login-form {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 12px;
-            margin: 6px 0;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 10px;
-            border-left: 3px solid #44aaff;
-            transition: background 0.2s;
+            flex-direction: column;
+            gap: 18px;
         }
-        .skill-node.unlocked {
-            border-left-color: #66ff88;
-            background: rgba(100, 255, 136, 0.08);
+        .login-form .input-group input {
+            padding: 14px 18px;
+            font-size: 1rem;
         }
-        .skill-node button {
-            background: #44aaff;
-            border: none;
-            color: #fff;
-            padding: 4px 14px;
-            border-radius: 20px;
-            font-weight: 600;
+        .login-error {
+            background: rgba(220, 50, 50, 0.12);
+            border: 1px solid rgba(220, 50, 50, 0.2);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            color: #ff6b6b;
+            font-size: 0.9rem;
+            text-align: center;
+            animation: shake 0.5s ease;
+            display: none;
+        }
+        .login-error.show {
+            display: block;
+        }
+        @keyframes shake {
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+            20% {
+                transform: translateX(-12px);
+            }
+            40% {
+                transform: translateX(12px);
+            }
+            60% {
+                transform: translateX(-8px);
+            }
+            80% {
+                transform: translateX(8px);
+            }
+        }
+        .login-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .login-footer span {
+            color: var(--gold);
             cursor: pointer;
-            transition: background 0.2s;
+            transition: var(--transition);
         }
-        .skill-node button:disabled {
-            background: #555;
-            cursor: not-allowed;
+        .login-footer span:hover {
+            color: var(--gold-light);
         }
-        .skill-node button:hover:not(:disabled) {
-            background: #88ddff;
-        }
-        .inv-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 8px;
-            margin: 4px 0;
-        }
-        .inv-item button {
-            background: #66dd88;
-            border: none;
-            color: #000;
-            padding: 2px 14px;
-            border-radius: 16px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .quest-item {
-            padding: 10px 12px;
-            margin: 6px 0;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 8px;
-            border-left: 3px solid #ffaa44;
-        }
-        .quest-item.complete {
-            border-left-color: #66ff88;
-            opacity: 0.6;
-        }
-        .quest-item .progress {
-            font-size: 12px;
-            color: #aaa;
+        .login-accounts-info {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 12px;
         }
 
-        #controls-hint {
+        /* ---------- MAIN APP ---------- */
+        #app {
+            display: none;
+            min-height: 100vh;
+        }
+        #app.active {
+            display: flex;
+        }
+
+        /* ---------- SIDEBAR ---------- */
+        .sidebar {
+            width: 240px;
+            flex-shrink: 0;
+            background: rgba(10, 10, 10, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border-glass);
+            padding: 24px 16px;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            overflow-y: auto;
+            transition: var(--transition);
+            z-index: 50;
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 28px;
+            border-bottom: 1px solid var(--border-glass);
+            margin-bottom: 24px;
+        }
+        .sidebar-brand svg {
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+        }
+        .sidebar-brand span {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--gold);
+            letter-spacing: 1px;
+        }
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+        .sidebar-nav a:hover {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+        .sidebar-nav a.active {
+            background: var(--gold-glow);
+            color: var(--gold);
+            border-left: 3px solid var(--gold);
+        }
+        .sidebar-nav a svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+        .sidebar-bottom {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-glass);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .sidebar-bottom .user-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 4px 8px;
+        }
+        .sidebar-bottom .user-info strong {
+            color: var(--text);
+        }
+        .sidebar-bottom .btn {
+            width: 100%;
+            justify-content: center;
+        }
+
+        /* ---------- MAIN CONTENT ---------- */
+        .main-content {
+            flex: 1;
+            padding: 28px 32px 40px;
+            overflow-y: auto;
+            max-height: 100vh;
+            background: radial-gradient(ellipse at 20% 50%, rgba(212, 168, 67, 0.03) 0%, transparent 70%);
+        }
+
+        /* ---------- PAGE SECTIONS ---------- */
+        .page {
+            display: none;
+            animation: fadePage 0.5s ease;
+        }
+        .page.active {
+            display: block;
+        }
+        @keyframes fadePage {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .page-header h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .page-header h2 small {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* ---------- DASHBOARD STATS ---------- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            padding: 22px 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            transition: var(--transition);
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212, 168, 67, 0.2);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        .stat-card .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+        .stat-card .stat-number {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--gold);
+        }
+        .stat-card .stat-number.green {
+            color: #4ade80;
+        }
+        .stat-card .stat-number.red {
+            color: #ff6b6b;
+        }
+        .stat-card .stat-number.blue {
+            color: #60a5fa;
+        }
+
+        /* ---------- INVENTORY GRID ---------- */
+        .inventory-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+        .inventory-toolbar .search-box {
+            flex: 1;
+            min-width: 180px;
+            position: relative;
+        }
+        .inventory-toolbar .search-box input {
+            width: 100%;
+            padding: 10px 16px 10px 42px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-size: 0.9rem;
+            outline: none;
+            transition: var(--transition);
+        }
+        .inventory-toolbar .search-box input:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px var(--gold-glow);
+        }
+        .inventory-toolbar .search-box svg {
             position: absolute;
-            bottom: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.15);
-            font-size: 10px;
-            text-align: center;
-            pointer-events: none;
-            z-index: 5;
-            background: rgba(0, 0, 0, 0.2);
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 18px;
+            height: 18px;
+            color: var(--text-muted);
+        }
+        .inventory-toolbar .filter-group {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .inventory-toolbar .filter-group .filter-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-glass);
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        .inventory-toolbar .filter-group .filter-btn:hover {
+            background: var(--bg-card);
+            color: var(--text);
+        }
+        .inventory-toolbar .filter-group .filter-btn.active {
+            background: var(--gold);
+            color: #0a0a0a;
+            border-color: var(--gold);
+        }
+        .inventory-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 18px;
+        }
+        .tire-card {
+            padding: 20px 22px;
+            background: var(--bg-card);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            transition: var(--transition);
+            position: relative;
+        }
+        .tire-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212, 168, 67, 0.15);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        }
+        .tire-card .tire-brand {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+        .tire-card .tire-size {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 2px 0 4px;
+        }
+        .tire-card .tire-type {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(212, 168, 67, 0.12);
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+        .tire-card .tire-quantity {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin: 4px 0 2px;
+        }
+        .tire-card .tire-quantity.low {
+            color: #ff6b6b;
+            animation: pulseRed 1.2s ease-in-out infinite;
+        }
+        @keyframes pulseRed {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.4;
+            }
+        }
+        .tire-card .tire-price {
+            color: var(--gold);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .tire-card .tire-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .tire-card .low-stock-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(220, 50, 50, 0.9);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
             padding: 4px 12px;
             border-radius: 12px;
-            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: pulseBadge 1.5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(220, 50, 50, 0.3);
         }
+        @keyframes pulseBadge {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.06);
+            }
+        }
+
+        /* ---------- EMPTY STATE ---------- */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state svg {
+            width: 72px;
+            height: 72px;
+            color: var(--text-muted);
+            opacity: 0.3;
+            margin-bottom: 16px;
+        }
+        .empty-state h3 {
+            font-size: 1.2rem;
+            color: var(--text);
+            margin-bottom: 4px;
+        }
+
+        /* ---------- MODAL ---------- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.open {
+            display: flex;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        .modal {
+            background: #141414;
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            padding: 32px 36px;
+            max-width: 520px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow);
+            animation: scaleIn 0.3s ease;
+        }
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        .modal h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--gold);
+        }
+        .modal .input-group {
+            margin-bottom: 16px;
+        }
+        .modal .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+            justify-content: flex-end;
+        }
+
+        /* ---------- ACTIVITY LOG ---------- */
+        .log-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .log-item {
+            padding: 16px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            align-items: center;
+        }
+        .log-item:hover {
+            background: var(--bg-card-hover);
+        }
+        .log-item .log-time {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--gold);
+            min-width: 80px;
+        }
+        .log-item .log-desc {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        .log-item .log-desc strong {
+            color: var(--text);
+        }
+        .log-item .log-detail {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .log-item .log-badge {
+            font-size: 0.65rem;
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .log-badge.login {
+            background: rgba(96, 165, 250, 0.15);
+            color: #60a5fa;
+        }
+        .log-badge.logout {
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-muted);
+        }
+        .log-badge.added {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ade80;
+        }
+        .log-badge.edited {
+            background: rgba(251, 191, 36, 0.15);
+            color: #fbbf24;
+        }
+        .log-badge.deleted {
+            background: rgba(220, 50, 50, 0.15);
+            color: #ff6b6b;
+        }
+        .log-badge.sold {
+            background: rgba(212, 168, 67, 0.2);
+            color: var(--gold);
+        }
+
+        /* ---------- SALES PAGE ---------- */
+        .sales-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+        .sales-stat {
+            padding: 18px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius);
+            text-align: center;
+        }
+        .sales-stat .s-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+        }
+        .sales-stat .s-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--gold);
+            margin-top: 2px;
+        }
+
+        /* ---------- TOAST ---------- */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 300;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 380px;
+            width: 100%;
+        }
+        .toast {
+            padding: 18px 22px;
+            background: #141414;
+            border: 1px solid var(--border-glass);
+            border-radius: var(--radius-sm);
+            box-shadow: var(--shadow);
+            animation: slideUp 0.4s ease;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+        .toast.success {
+            border-left: 4px solid #4ade80;
+        }
+        .toast.error {
+            border-left: 4px solid #ff6b6b;
+        }
+        .toast.info {
+            border-left: 4px solid var(--gold);
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .toast .toast-title {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .toast .toast-msg {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+        .toast .toast-detail {
+            font-size: 0.85rem;
+            color: var(--gold);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* ---------- MOBILE RESPONSIVE ---------- */
+        @media (max-width: 1024px) {
+            .sidebar {
+                width: 200px;
+                padding: 16px 12px;
+            }
+            .main-content {
+                padding: 20px 24px;
+            }
+        }
+
         @media (max-width: 768px) {
-            #controls-hint {
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                top: auto;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: auto;
+                flex-direction: row;
+                padding: 8px 12px;
+                border-right: none;
+                border-top: 1px solid var(--border-glass);
+                background: rgba(10, 10, 10, 0.96);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                overflow-x: auto;
+                z-index: 60;
+            }
+            .sidebar-brand {
                 display: none;
             }
-            #hud .bar-wrap {
-                width: 110px;
-                height: 10px;
+            .sidebar-nav {
+                flex-direction: row;
+                gap: 2px;
+                flex: 1;
             }
-            #hud .label {
-                font-size: 7px;
+            .sidebar-nav a {
+                flex-direction: column;
+                gap: 2px;
+                padding: 8px 12px;
+                font-size: 0.65rem;
+                min-width: 56px;
+                text-align: center;
+                border-left: none !important;
             }
-            #joystick-area {
+            .sidebar-nav a svg {
+                width: 20px;
+                height: 20px;
+            }
+            .sidebar-nav a.active {
+                border-left: none !important;
+                border-bottom: 2px solid var(--gold);
+            }
+            .sidebar-bottom {
+                display: none;
+            }
+            .main-content {
+                padding: 16px 16px 90px;
+                max-height: calc(100vh - 70px);
+            }
+            .page-header h2 {
+                font-size: 1.3rem;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .stat-card .stat-number {
+                font-size: 1.6rem;
+            }
+            .inventory-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal {
+                padding: 24px 20px;
+                margin: 10px;
+            }
+            .login-container {
+                padding: 28px 20px;
+            }
+            .startup-title {
+                font-size: 2rem;
+            }
+            .inventory-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .inventory-toolbar .filter-group {
+                justify-content: center;
+            }
+            .toast-container {
+                bottom: 80px;
+                right: 16px;
+                left: 16px;
+                max-width: 100%;
+            }
+            .sales-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-card {
+                padding: 14px 16px;
+            }
+            .stat-card .stat-number {
+                font-size: 1.3rem;
+            }
+            .tire-card {
+                padding: 16px 18px;
+            }
+            .modal {
+                padding: 18px 16px;
+            }
+            .login-container {
+                padding: 20px 16px;
+            }
+            .startup-title {
+                font-size: 1.6rem;
+            }
+            .startup-tire {
                 width: 100px;
                 height: 100px;
-                bottom: 80px;
-                left: 16px;
-            }
-            #joystick-knob {
-                width: 36px;
-                height: 36px;
-            }
-            .action-btn {
-                width: 44px;
-                height: 44px;
-                font-size: 16px;
-            }
-            #btn-lock,
-            #btn-parry,
-            #btn-inv {
-                width: 38px;
-                height: 38px;
-                font-size: 12px;
-            }
-            #btn-group {
-                bottom: 90px;
-                right: 8px;
-                gap: 6px;
-            }
-            .btn-row {
-                gap: 6px;
-            }
-            #combo-display {
-                font-size: 18px;
-                top: 60px;
-            }
-            .panel {
-                min-width: 280px;
-                padding: 16px;
             }
         }
-        @media (pointer: coarse) {
-            #controls-hint {
-                display: none;
-            }
-        }
-        @media (pointer: fine) {
-            #touch-layer {
-                display: none;
-            }
-        }
-        /* scrollbar */
-        .panel::-webkit-scrollbar {
+
+        /* ---------- SCROLLBAR FOR MODAL ---------- */
+        .modal::-webkit-scrollbar {
             width: 4px;
         }
-        .panel::-webkit-scrollbar-thumb {
-            background: #44aaff;
-            border-radius: 4px;
+        .modal::-webkit-scrollbar-thumb {
+            background: var(--gold);
+            border-radius: 10px;
         }
-        .panel::-webkit-scrollbar-track {
-            background: transparent;
+
+        /* ---------- ADD TIRE BUTTON FLOATING (mobile) ---------- */
+        .fab-add {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            z-index: 55;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--gold);
+            color: #0a0a0a;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 30px var(--gold-glow);
+            transition: var(--transition);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .fab-add:hover {
+            transform: scale(1.06);
+        }
+        @media (max-width: 768px) {
+            .fab-add {
+                display: flex;
+            }
+        }
+
+        /* ---------- HIDE SCROLLBAR ON SIDEBAR MOBILE ---------- */
+        .sidebar::-webkit-scrollbar {
+            display: none;
+        }
+        .sidebar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== HUD ===== -->
-    <div id="hud">
-        <div class="label"><span>❤️</span><span id="hp-text">100</span></div>
-        <div class="bar-wrap"><div class="bar-fill" id="hp-fill" style="width:100%"></div></div>
-        <div class="label"><span>⚡</span><span id="stam-text">100</span></div>
-        <div class="bar-wrap"><div class="bar-fill" id="stam-fill" style="width:100%"></div></div>
-        <div class="label"><span>🌀</span><span id="energy-text">50</span></div>
-        <div class="bar-wrap"><div class="bar-fill" id="energy-fill" style="width:100%"></div></div>
+    <!-- ============================================================
+    STARTUP OVERLAY
+    ============================================================ -->
+    <div id="startup-overlay">
+        <div class="startup-tire">
+            <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="42" stroke="#d4a843" stroke-width="4" opacity="0.3"/>
+                <circle cx="50" cy="50" r="32" stroke="#d4a843" stroke-width="3" opacity="0.5"/>
+                <circle cx="50" cy="50" r="22" stroke="#d4a843" stroke-width="2.5" opacity="0.7"/>
+                <circle cx="50" cy="50" r="12" stroke="#d4a843" stroke-width="2" opacity="0.9"/>
+                <circle cx="50" cy="50" r="6" fill="#d4a843" opacity="0.6"/>
+                <!-- Tread marks -->
+                <line x1="50" y1="8" x2="50" y2="16" stroke="#d4a843" stroke-width="2" opacity="0.4"/>
+                <line x1="50" y1="84" x2="50" y2="92" stroke="#d4a843" stroke-width="2" opacity="0.4"/>
+                <line x1="8" y1="50" x2="16" y2="50" stroke="#d4a843" stroke-width="2" opacity="0.4"/>
+                <line x1="84" y1="50" x2="92" y2="50" stroke="#d4a843" stroke-width="2" opacity="0.4"/>
+                <line x1="20" y1="20" x2="26" y2="26" stroke="#d4a843" stroke-width="2" opacity="0.4"/>
+                <line x1="74" y1="74" x2="80" y2="80" stroke="#d4a843" stroke-width="2" opacity="0.4"/>
+                <line x1="20" y1="80" x2="26" y2="74" stroke="#d4a843" stroke-width="2" opacity="0.4"/>
+                <line x1="74" y1="26" x2="80" y2="20" stroke="#d4a843" stroke-width="2" opacity="0.4"/>
+            </svg>
+        </div>
+        <div class="startup-title">OBI TIRE INVENTORY</div>
+        <div class="startup-sub">Professional Inventory Management</div>
+        <div class="startup-loader"></div>
     </div>
-    <div id="combo-display">⚔️ 2x COMBO</div>
-    <div id="lockon-indicator">◉ LOCK-ON</div>
-    <div id="controls-hint">🖱️ Click to lock · WASD · LMB/RMB · Shift · Space · Q · E · F · Tab</div>
 
-    <!-- ===== TOUCH LAYER ===== -->
-    <div id="touch-layer">
-        <div id="joystick-area"><div id="joystick-knob"></div></div>
-        <div id="camera-drag"></div>
-        <div id="btn-group">
-            <div class="btn-row">
-                <button class="action-btn small-btn" id="btn-dash">💨</button>
-                <button class="action-btn small-btn" id="btn-jump">⬆</button>
-                <button class="action-btn small-btn" id="btn-lock">🎯</button>
-                <button class="action-btn small-btn" id="btn-parry">🛡️</button>
-                <button class="action-btn small-btn" id="btn-inv">📦</button>
+    <!-- ============================================================
+    LOGIN PAGE
+    ============================================================ -->
+    <div id="login-page">
+        <div class="login-container">
+            <div class="login-logo">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="42" stroke="#d4a843" stroke-width="4" opacity="0.3"/>
+                    <circle cx="50" cy="50" r="32" stroke="#d4a843" stroke-width="3" opacity="0.5"/>
+                    <circle cx="50" cy="50" r="22" stroke="#d4a843" stroke-width="2.5" opacity="0.7"/>
+                    <circle cx="50" cy="50" r="12" stroke="#d4a843" stroke-width="2" opacity="0.9"/>
+                    <circle cx="50" cy="50" r="6" fill="#d4a843" opacity="0.6"/>
+                </svg>
+                <h1>OBI TIRE</h1>
+                <p>Inventory Management</p>
             </div>
-            <div class="btn-row">
-                <button class="action-btn" id="btn-attack">⚔️</button>
-                <button class="action-btn" id="btn-heavy">💥</button>
-                <button class="action-btn" id="btn-ability">🌀</button>
+            <form class="login-form" id="login-form">
+                <div class="input-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" placeholder="Enter username" required autofocus />
+                </div>
+                <div class="input-group">
+                    <label>Master Employee Code</label>
+                    <input type="password" id="login-code" placeholder="Enter master code" required />
+                </div>
+                <div class="login-error" id="login-error">Access Denied</div>
+                <button type="submit" class="btn btn-gold" style="width:100%;padding:14px;font-size:1rem;">
+                    Login
+                </button>
+            </form>
+            <div class="login-footer">
+                Don't have an account? <span id="show-register">Create one</span>
             </div>
+            <div class="login-accounts-info" id="accounts-info"></div>
         </div>
     </div>
 
-    <!-- ===== PANELS ===== -->
-    <div class="panel" id="skill-panel">
-        <button class="panel-close" data-panel="skill-panel">✕</button>
-        <h2>🌀 Skill Tree</h2>
-        <div id="skill-tree-container"></div>
-        <div style="margin-top:12px;text-align:center;font-size:12px;color:#888;">Skill Points: <span id="skill-points">0</span></div>
+    <!-- ============================================================
+    MAIN APP
+    ============================================================ -->
+    <div id="app">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="50" r="42" stroke="#d4a843" stroke-width="4" opacity="0.3"/>
+                    <circle cx="50" cy="50" r="32" stroke="#d4a843" stroke-width="3" opacity="0.5"/>
+                    <circle cx="50" cy="50" r="22" stroke="#d4a843" stroke-width="2.5" opacity="0.7"/>
+                    <circle cx="50" cy="50" r="12" stroke="#d4a843" stroke-width="2" opacity="0.9"/>
+                    <circle cx="50" cy="50" r="6" fill="#d4a843" opacity="0.6"/>
+                </svg>
+                <span>OBI</span>
+            </div>
+            <nav class="sidebar-nav">
+                <a class="active" data-page="dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                    Dashboard
+                </a>
+                <a data-page="inventory">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                    Inventory
+                </a>
+                <a data-page="sales">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    Sales
+                </a>
+                <a data-page="activity">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                    Activity
+                </a>
+            </nav>
+            <div class="sidebar-bottom">
+                <div class="user-info">👤 <strong id="sidebar-username">User</strong></div>
+                <button class="btn btn-outline-gold btn-sm" id="logout-btn">Logout</button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <!-- ===== DASHBOARD ===== -->
+            <section class="page active" id="page-dashboard">
+                <div class="page-header">
+                    <h2>Dashboard <small>Real-time inventory overview</small></h2>
+                </div>
+                <div class="stats-grid" id="dashboard-stats">
+                    <div class="stat-card"><div class="stat-label">Total Tires</div><div class="stat-number" id="stat-total">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Today's Sales</div><div class="stat-number gold" id="stat-today">$0</div></div>
+                    <div class="stat-card"><div class="stat-label">Low Stock</div><div class="stat-number red" id="stat-low">0</div></div>
+                    <div class="stat-card"><div class="stat-label">Total Brands</div><div class="stat-number blue" id="stat-brands">0</div></div>
+                </div>
+                <div class="glass" style="padding:24px;border-radius:var(--radius);">
+                    <h3 style="margin-bottom:12px;font-weight:600;">📊 Recent Activity</h3>
+                    <div id="dashboard-recent-log" style="max-height:320px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
+                </div>
+            </section>
+
+            <!-- ===== INVENTORY ===== -->
+            <section class="page" id="page-inventory">
+                <div class="page-header">
+                    <h2>Inventory <small>Manage your tire stock</small></h2>
+                    <button class="btn btn-gold" id="add-tire-btn">+ Add Tire</button>
+                </div>
+                <div class="inventory-toolbar">
+                    <div class="search-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        <input type="text" id="search-input" placeholder="Search by brand or size..." />
+                    </div>
+                    <div class="filter-group" id="filter-group">
+                        <button class="filter-btn active" data-filter="all">All</button>
+                        <button class="filter-btn" data-filter="Winter">Winter</button>
+                        <button class="filter-btn" data-filter="Summer">Summer</button>
+                        <button class="filter-btn" data-filter="All Season">All Season</button>
+                        <button class="filter-btn" data-filter="All Weather">All Weather</button>
+                    </div>
+                </div>
+                <div class="inventory-grid" id="inventory-grid"></div>
+            </section>
+
+            <!-- ===== SALES ===== -->
+            <section class="page" id="page-sales">
+                <div class="page-header">
+                    <h2>Sales Analytics <small>Track your revenue</small></h2>
+                </div>
+                <div class="sales-grid" id="sales-stats">
+                    <div class="sales-stat"><div class="s-label">Today</div><div class="s-number" id="sales-today">$0</div></div>
+                    <div class="sales-stat"><div class="s-label">This Week</div><div class="s-number" id="sales-week">$0</div></div>
+                    <div class="sales-stat"><div class="s-label">This Month</div><div class="s-number" id="sales-month">$0</div></div>
+                    <div class="sales-stat"><div class="s-label">Total Sales</div><div class="s-number" id="sales-total">$0</div></div>
+                    <div class="sales-stat"><div class="s-label">Tires Sold</div><div class="s-number" id="sales-count">0</div></div>
+                </div>
+                <div class="glass" style="padding:24px;border-radius:var(--radius);">
+                    <h3 style="margin-bottom:12px;font-weight:600;">📈 Sales History</h3>
+                    <div id="sales-history" style="max-height:400px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
+                </div>
+            </section>
+
+            <!-- ===== ACTIVITY ===== -->
+            <section class="page" id="page-activity">
+                <div class="page-header">
+                    <h2>Activity Log <small>Every action recorded</small></h2>
+                    <button class="btn btn-outline-gold btn-sm" id="clear-log-btn">Clear Log</button>
+                </div>
+                <div class="log-list" id="activity-log-list"></div>
+            </section>
+
+        </main>
     </div>
 
-    <div class="panel" id="inv-panel">
-        <button class="panel-close" data-panel="inv-panel">✕</button>
-        <h2>📦 Inventory</h2>
-        <div id="inv-container"></div>
+    <!-- ============================================================
+    FLOATING ADD BUTTON (mobile)
+    ============================================================ -->
+    <button class="fab-add" id="fab-add">+</button>
+
+    <!-- ============================================================
+    MODAL (Add / Edit / Sell)
+    ============================================================ -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal-content">
+            <h3 id="modal-title">Add Tire</h3>
+            <form id="modal-form">
+                <div id="modal-fields"></div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" id="modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-gold" id="modal-submit">Save</button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="panel" id="quest-panel">
-        <button class="panel-close" data-panel="quest-panel">✕</button>
-        <h2>📜 Quests</h2>
-        <div id="quest-container"></div>
-    </div>
+    <!-- ============================================================
+    TOAST CONTAINER
+    ============================================================ -->
+    <div class="toast-container" id="toast-container"></div>
 
-    <!-- ===== THREE.JS ===== -->
-    <script type="importmap">
-        {
-            "imports": {
-                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
-                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
-            }
-        }
-    </script>
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        // =============================================================
+        // DATA LAYER
+        // =============================================================
+        const STORAGE_KEY = 'obi_tire_data';
 
-    <script type="module">
-        // =======================================================================
-        //  IMPORTS
-        // =======================================================================
-        import * as THREE from 'three';
-        import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
-        import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
-        import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
-
-        // =======================================================================
-        //  CONFIG
-        // =======================================================================
-        const CONFIG = {
-            walkSpeed: 4.0,
-            sprintSpeed: 7.0,
-            jumpForce: 7.0,
-            gravity: -22,
-            maxJumps: 2,
-            dashSpeed: 16,
-            dashDuration: 0.25,
-            lightAttackDuration: 0.35,
-            heavyAttackDuration: 0.55,
-            abilityCooldown: 2.5,
-            staminaRegen: 10,
-            energyRegen: 2,
-            maxStamina: 100,
-            maxHealth: 100,
-            maxEnergy: 60,
-        };
-
-        // =======================================================================
-        //  SCENE SETUP
-        // =======================================================================
-        const scene = new THREE.Scene();
-        scene.background = new THREE.Color(0x1a2b4a);
-        scene.fog = new THREE.Fog(0x1a2b4a, 45, 90);
-
-        const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 200);
-        camera.position.set(0, 6, -10);
-
-        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        renderer.toneMappingExposure = 1.2;
-        document.body.prepend(renderer.domElement);
-
-        const composer = new EffectComposer(renderer);
-        composer.addPass(new RenderPass(scene, camera));
-        const bloom = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.3, 0.4, 0.85);
-        composer.addPass(bloom);
-
-        // =======================================================================
-        //  LIGHTING
-        // =======================================================================
-        const ambient = new THREE.AmbientLight(0x446688, 0.4);
-        scene.add(ambient);
-        const hemi = new THREE.HemisphereLight(0x88ccff, 0x442233, 0.6);
-        scene.add(hemi);
-        const sun = new THREE.DirectionalLight(0xffeedd, 2.5);
-        sun.position.set(30, 40, 20);
-        sun.castShadow = true;
-        sun.shadow.mapSize.width = 2048;
-        sun.shadow.mapSize.height = 2048;
-        sun.shadow.camera.near = 0.1;
-        sun.shadow.camera.far = 80;
-        sun.shadow.camera.left = -40;
-        sun.shadow.camera.right = 40;
-        sun.shadow.camera.top = 40;
-        sun.shadow.camera.bottom = -40;
-        scene.add(sun);
-        const fill = new THREE.DirectionalLight(0x8888ff, 0.3);
-        fill.position.set(-20, 10, -20);
-        scene.add(fill);
-
-        // =======================================================================
-        //  WORLD
-        // =======================================================================
-        // Ground
-        const groundGeo = new THREE.PlaneGeometry(160, 160, 160, 160);
-        groundGeo.rotateX(-Math.PI / 2);
-        const groundMat = new THREE.MeshStandardMaterial({ color: 0x3a6a4a, roughness: 0.8, metalness: 0 });
-        const ground = new THREE.Mesh(groundGeo, groundMat);
-        ground.receiveShadow = true;
-        scene.add(ground);
-
-        // Grid
-        const grid = new THREE.GridHelper(160, 50, 0x88ddff, 0x44aaff);
-        grid.position.y = 0.05;
-        grid.material.transparent = true;
-        grid.material.opacity = 0.12;
-        scene.add(grid);
-
-        // Trees
-        function makeTree(x, z) {
-            const g = new THREE.Group();
-            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.35, 1.8),
-                new THREE.MeshStandardMaterial({ color: 0x8b6b4a, roughness: 0.9 }));
-            trunk.position.y = 0.9;
-            trunk.castShadow = true;
-            g.add(trunk);
-            const crown = new THREE.Mesh(new THREE.SphereGeometry(0.8 + Math.random() * 0.4, 6, 6),
-                new THREE.MeshStandardMaterial({ color: 0x3bb86a, roughness: 0.6, emissive: 0x1a4a2a,
-                    emissiveIntensity: 0.05 }));
-            crown.position.y = 2.0 + Math.random() * 0.5;
-            crown.castShadow = true;
-            g.add(crown);
-            g.position.set(x, 0, z);
-            g.rotation.y = Math.random() * Math.PI * 2;
-            g.scale.setScalar(0.7 + Math.random() * 0.6);
-            return g;
-        }
-        for (let i = 0; i < 200; i++) {
-            const a = Math.random() * Math.PI * 2,
-                r = 8 + Math.random() * 65;
-            const x = Math.cos(a) * r,
-                z = Math.sin(a) * r;
-            if (Math.abs(x) < 8 && Math.abs(z) < 8) continue;
-            scene.add(makeTree(x, z));
-        }
-
-        // Houses
-        function makeHouse(x, z, color = 0xffccaa) {
-            const g = new THREE.Group();
-            const body = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.2, 1.8),
-                new THREE.MeshStandardMaterial({ color, roughness: 0.6, emissive: color, emissiveIntensity: 0.05 }));
-            body.position.y = 0.6;
-            body.castShadow = true;
-            g.add(body);
-            const roof = new THREE.Mesh(new THREE.ConeGeometry(1.4, 0.9, 4),
-                new THREE.MeshStandardMaterial({ color: 0xcc5533, roughness: 0.7, emissive: 0x441111,
-                    emissiveIntensity: 0.1 }));
-            roof.position.y = 1.5;
-            roof.rotation.y = Math.PI / 4;
-            roof.castShadow = true;
-            g.add(roof);
-            g.position.set(x, 0, z);
-            g.rotation.y = Math.random() * Math.PI * 2;
-            return g;
-        }
-        const village = [
-            [-14, -12],
-            [-16, -6],
-            [-10, -14],
-            [-20, -14],
-            [-12, -4],
-            [-22, -8],
-            [-8, -8]
-        ];
-        village.forEach(p => scene.add(makeHouse(p[0], p[1], 0xffddaa)));
-
-        // Mountains
-        function makeMountain(x, z, scale) {
-            const m = new THREE.Mesh(new THREE.DodecahedronGeometry(2.8, 1),
-                new THREE.MeshStandardMaterial({ color: 0x6a7a8a, roughness: 0.9, flatShading: true }));
-            m.position.set(x, 0.5, z);
-            m.scale.set(scale, scale * 0.6 + 0.6, scale);
-            m.castShadow = true;
-            m.receiveShadow = true;
-            scene.add(m);
-        }
-        const mtns = [
-            [-40, -30, 5],
-            [-45, -20, 4],
-            [35, 35, 6],
-            [40, 25, 3.5],
-            [30, -40, 5],
-            [-30, 40, 4.5]
-        ];
-        mtns.forEach(m => makeMountain(m[0], m[1], m[2]));
-
-        // Rocks
-        for (let i = 0; i < 50; i++) {
-            const a = Math.random() * Math.PI * 2,
-                r = 15 + Math.random() * 50;
-            const rock = new THREE.Mesh(new THREE.SphereGeometry(0.3 + Math.random() * 0.8, 5),
-                new THREE.MeshStandardMaterial({ color: 0x6a7a7a, roughness: 0.9 }));
-            rock.position.set(Math.cos(a) * r, 0.2 + Math.random() * 0.5, Math.sin(a) * r);
-            rock.castShadow = true;
-            scene.add(rock);
-        }
-
-        // =======================================================================
-        //  PLAYER
-        // =======================================================================
-        const playerGroup = new THREE.Group();
-        playerGroup.position.set(0, 1, 0);
-
-        // Body
-        const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.5, 0.8, 8, 8),
-            new THREE.MeshStandardMaterial({ color: 0x44aaff, roughness: 0.2, metalness: 0.1, emissive: 0x1144aa,
-                emissiveIntensity: 0.1 }));
-        body.position.y = 0.9;
-        body.castShadow = true;
-        playerGroup.add(body);
-
-        // Head
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.4, 12, 12),
-            new THREE.MeshStandardMaterial({ color: 0xffddbb, roughness: 0.3 }));
-        head.position.y = 1.6;
-        head.castShadow = true;
-        playerGroup.add(head);
-
-        // Hair
-        const hair = new THREE.Mesh(new THREE.ConeGeometry(0.45, 0.4, 6),
-            new THREE.MeshStandardMaterial({ color: 0x222244, roughness: 0.8, emissive: 0x111133,
-                emissiveIntensity: 0.2 }));
-        hair.position.y = 1.9;
-        hair.rotation.y = Math.PI / 6;
-        playerGroup.add(hair);
-
-        // Eyes
-        const eyeMat = new THREE.MeshStandardMaterial({ color: 0x00ddff, emissive: 0x00ddff, emissiveIntensity: 0.5 });
-        const eyeL = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6), eyeMat);
-        eyeL.position.set(-0.15, 1.7, 0.35);
-        playerGroup.add(eyeL);
-        const eyeR = new THREE.Mesh(new THREE.SphereGeometry(0.08, 6), eyeMat);
-        eyeR.position.set(0.15, 1.7, 0.35);
-        playerGroup.add(eyeR);
-
-        // Sword
-        const blade = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.7, 0.02),
-            new THREE.MeshStandardMaterial({ color: 0x88ddff, emissive: 0x44aaff, emissiveIntensity: 0.3, metalness: 0.9,
-                roughness: 0.1 }));
-        blade.position.set(0.7, 0.6, 0);
-        const handle = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.2),
-            new THREE.MeshStandardMaterial({ color: 0x332211 }));
-        handle.position.set(0.7, 0.2, 0);
-        const sword = new THREE.Group();
-        sword.add(blade);
-        sword.add(handle);
-        playerGroup.add(sword);
-
-        scene.add(playerGroup);
-
-        // Physics state
-        const pVel = new THREE.Vector3(0, 0, 0);
-        let grounded = false;
-        let jumpCount = 0;
-        let stamina = CONFIG.maxStamina;
-        let health = CONFIG.maxHealth;
-        let energy = CONFIG.maxEnergy;
-        let combo = 0;
-        let comboTimeout = null;
-        let attacking = false,
-            attackTimer = 0,
-            isHeavy = false;
-        let dashing = false,
-            dashTimer = 0;
-        let parrying = false,
-            parryTimer = 0;
-        let abilityCooldown = 0;
-        let lockOnTarget = null,
-            locked = false;
-        let skillPoints = 0;
-
-        // Camera pivot
-        const camPivot = new THREE.Object3D();
-        camPivot.position.copy(playerGroup.position);
-        scene.add(camPivot);
-        let camTheta = 0,
-            camPhi = 0.6;
-
-        // =======================================================================
-        //  ENEMIES
-        // =======================================================================
-        const enemies = [];
-
-        function createEnemy(x, z, isBoss = false, isRanged = false) {
-            const g = new THREE.Group();
-            const scale = isBoss ? 2.0 : 0.8 + Math.random() * 0.4;
-            const col = isBoss ? 0xff2244 : (isRanged ? 0x44dd88 : 0xff6644);
-
-            const eBody = new THREE.Mesh(new THREE.CapsuleGeometry(0.4 * scale, 0.6 * scale, 6),
-                new THREE.MeshStandardMaterial({ color: col, roughness: 0.3, emissive: col, emissiveIntensity: 0.15 }));
-            eBody.position.y = 0.8 * scale;
-            eBody.castShadow = true;
-            g.add(eBody);
-
-            const eHead = new THREE.Mesh(new THREE.SphereGeometry(0.3 * scale, 8),
-                new THREE.MeshStandardMaterial({ color: 0xcc8866, roughness: 0.4 }));
-            eHead.position.y = 1.4 * scale;
-            eHead.castShadow = true;
-            g.add(eHead);
-
-            const hornMat = new THREE.MeshStandardMaterial({ color: 0x222222, emissive: 0x441111, emissiveIntensity: 0.2 });
-            for (let side of [-1, 1]) {
-                const horn = new THREE.Mesh(new THREE.ConeGeometry(0.08 * scale, 0.25 * scale, 4), hornMat);
-                horn.position.set(side * 0.2 * scale, 1.6 * scale, 0);
-                horn.rotation.z = side * 0.4;
-                g.add(horn);
-            }
-            const eEye = new THREE.Mesh(new THREE.SphereGeometry(0.08 * scale, 6),
-                new THREE.MeshStandardMaterial({ color: 0xff0000, emissive: 0xff0000, emissiveIntensity: 0.8 }));
-            eEye.position.set(0.15 * scale, 1.45 * scale, 0.3 * scale);
-            g.add(eEye);
-            const eEye2 = eEye.clone();
-            eEye2.position.x = -0.15 * scale;
-            g.add(eEye2);
-
-            g.position.set(x, 0, z);
-            scene.add(g);
-
-            const enemy = {
-                mesh: g,
-                health: isBoss ? 150 : (isRanged ? 20 : 30 + Math.random() * 20),
-                maxHealth: isBoss ? 150 : (isRanged ? 20 : 30 + Math.random() * 20),
-                speed: isBoss ? 2.8 : (isRanged ? 1.5 : 2.0 + Math.random() * 0.8),
-                damage: isBoss ? 30 : (isRanged ? 12 : 8 + Math.random() * 6),
-                attackRange: isBoss ? 3.5 : (isRanged ? 8 : 1.8),
-                attackCooldown: 0,
-                isBoss,
-                isRanged,
-                scale,
-                hitFlash: 0,
-                deathTimer: 0,
-                isDead: false,
-                phase: 1, // for boss
-                rangedTimer: 0,
-                aggroRange: isRanged ? 20 : 15,
+        function getDefaultData() {
+            return {
+                users: [], // { username, password }
+                tires: [], // { id, brand, size, type, quantity, price }
+                logs: [], // { id, date, time, username, action, brand, size, type, quantity, price, total }
+                sales: [], // { id, date, time, username, brand, size, type, quantity, price, total }
+                stats: {
+                    totalSales: 0,
+                    totalTiresSold: 0,
+                    todaySales: 0,
+                    weeklySales: 0,
+                    monthlySales: 0,
+                    lastUpdated: null
+                }
             };
-            enemies.push(enemy);
-            return enemy;
         }
 
-        // Spawn enemies
-        createEnemy(8, 5);
-        createEnemy(-6, 9);
-        createEnemy(12, -7);
-        createEnemy(-10, -8);
-        createEnemy(5, -12);
-        createEnemy(0, 15, false, true);
-        createEnemy(-12, -15, false, true);
-        // Bosses
-        const boss1 = createEnemy(-25, 25, true);
-        const boss2 = createEnemy(30, -30, true);
+        let data = loadData();
+        let currentUser = null;
+        let currentFilter = 'all';
+        let currentSearch = '';
 
-        // =======================================================================
-        //  INVENTORY / QUESTS / SKILLS
-        // =======================================================================
-        const inventory = { potion: 0, energyPotion: 0 };
-        const quests = [{
-            id: 'q1',
-            name: '🗡️ Slay 5 Enemies',
-            desc: 'Defeat any 5 enemies.',
-            progress: 0,
-            target: 5,
-            complete: false,
-            reward: () => { skillPoints += 2;
-                addQuest('q2'); }
-        }, {
-            id: 'q2',
-            name: '💊 Collect 3 Potions',
-            desc: 'Pick up 3 health potions from defeated enemies.',
-            progress: 0,
-            target: 3,
-            complete: false,
-            reward: () => { skillPoints += 2;
-                addQuest('q3'); }
-        }, {
-            id: 'q3',
-            name: '👹 Defeat a Boss',
-            desc: 'Kill any boss enemy.',
-            progress: 0,
-            target: 1,
-            complete: false,
-            reward: () => { skillPoints += 5; }
-        }];
-        let activeQuests = [quests[0]];
-
-        function addQuest(id) {
-            const q = quests.find(q => q.id === id);
-            if (q && !activeQuests.includes(q)) activeQuests.push(q);
-        }
-
-        const skillTree = [
-            { id: 's1', name: '⚔️ Attack +20%', cost: 2, unlocked: false, effect: () => { playerAttackMult = 1.2; } },
-            { id: 's2', name: '🛡️ Defense +20%', cost: 2, unlocked: false, effect: () => { playerDefense = 1.2; } },
-            { id: 's3', name: '🏃 Stamina +30', cost: 2, unlocked: false, effect: () => { CONFIG.maxStamina += 30;
-                    stamina = CONFIG.maxStamina; } },
-            { id: 's4', name: '🌀 Energy +30', cost: 2, unlocked: false, effect: () => { CONFIG.maxEnergy += 30;
-                    energy = CONFIG.maxEnergy; } },
-            { id: 's5', name: '💨 Dash Cooldown -50%', cost: 3, unlocked: false, effect: () => { CONFIG.dashDuration *= 0.5; } },
-            { id: 's6', name: '🌟 Ability Damage +40%', cost: 3, unlocked: false, effect: () => { abilityDamageMult = 1.4; } },
-        ];
-        let playerAttackMult = 1;
-        let playerDefense = 1;
-        let abilityDamageMult = 1;
-
-        // =======================================================================
-        //  AUDIO (Web Audio)
-        // =======================================================================
-        let audioCtx = null;
-
-        function initAudio() {
-            if (!audioCtx) audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-        }
-
-        function playTone(freq, duration, type = 'sine', vol = 0.15) {
-            if (!audioCtx) return;
+        function loadData() {
             try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {}
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    // ensure all keys exist
+                    const def = getDefaultData();
+                    for (const k in def) { if (!(k in parsed)) parsed[k] = def[k]; }
+                    return parsed;
+                }
+            } catch (_) { /* ignore */ }
+            return getDefaultData();
         }
 
-        function sfxHit() { playTone(800, 0.08, 'sawtooth', 0.1); }
-
-        function sfxHeal() { playTone(600, 0.2, 'sine', 0.12);
-            setTimeout(() => playTone(900, 0.15, 'sine', 0.1), 150); }
-
-        function sfxAbility() { playTone(400, 0.3, 'square', 0.08);
-            setTimeout(() => playTone(200, 0.4, 'square', 0.06), 100); }
-
-        function sfxDash() { playTone(1200, 0.06, 'sine', 0.05); }
-
-        function sfxParry() { playTone(1500, 0.1, 'square', 0.1);
-            setTimeout(() => playTone(2000, 0.08, 'square', 0.08), 50); }
-
-        function sfxDeath() { playTone(200, 0.5, 'sawtooth', 0.08);
-            setTimeout(() => playTone(100, 0.6, 'sawtooth', 0.06), 200); }
-
-        // =======================================================================
-        //  VFX
-        // =======================================================================
-        const particles = [];
-        const damageNumbers = [];
-
-        function spawnHit(pos, color = 0x44ddff, count = 25) {
-            const geo = new THREE.BufferGeometry();
-            const positions = new Float32Array(count * 3);
-            const colors = new Float32Array(count * 3);
-            const vel = [];
-            for (let i = 0; i < count; i++) {
-                const dir = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
-                const dist = 0.2 + Math.random() * 0.8;
-                positions[i * 3] = pos.x + dir.x * dist;
-                positions[i * 3 + 1] = pos.y + dir.y * dist;
-                positions[i * 3 + 2] = pos.z + dir.z * dist;
-                const c = new THREE.Color(color);
-                colors[i * 3] = c.r;
-                colors[i * 3 + 1] = c.g;
-                colors[i * 3 + 2] = c.b;
-                vel.push(dir.clone().multiplyScalar(2 + Math.random() * 5));
-            }
-            geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-            const mat = new THREE.PointsMaterial({ size: 0.2, vertexColors: true, transparent: true, opacity: 1,
-                blending: THREE.AdditiveBlending, depthWrite: false });
-            const mesh = new THREE.Points(geo, mat);
-            scene.add(mesh);
-            particles.push({ mesh, vel, timer: 0, maxLife: 1.0 });
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
         }
 
-        function spawnDamageNumber(pos, amount, color = '#ff4444') {
+        function generateId() {
+            return Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        }
+
+        function formatCurrency(n) {
+            return '$' + Number(n).toFixed(0);
+        }
+
+        function formatDate(d) {
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function formatTime(d) {
+            return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function formatDateTime(d) {
+            return formatDate(d) + ' ' + formatTime(d);
+        }
+
+        function getTodayStr() {
+            return new Date().toDateString();
+        }
+
+        function getWeekRange() {
+            const now = new Date();
+            const day = now.getDay();
+            const diff = now.getDate() - day + (day === 0 ? -6 : 1);
+            const monday = new Date(now);
+            monday.setDate(diff);
+            monday.setHours(0, 0, 0, 0);
+            const sunday = new Date(monday);
+            sunday.setDate(monday.getDate() + 6);
+            return { start: monday, end: sunday };
+        }
+
+        function getMonthRange() {
+            const now = new Date();
+            const start = new Date(now.getFullYear(), now.getMonth(), 1);
+            const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+            return { start, end };
+        }
+
+        function isToday(date) {
+            return date.toDateString() === new Date().toDateString();
+        }
+
+        function isInWeek(date) {
+            const range = getWeekRange();
+            return date >= range.start && date <= range.end;
+        }
+
+        function isInMonth(date) {
+            const range = getMonthRange();
+            return date >= range.start && date <= range.end;
+        }
+
+        // =============================================================
+        // TOAST SYSTEM
+        // =============================================================
+        function showToast(title, msg, detail, type = 'info') {
+            const container = document.getElementById('toast-container');
             const el = document.createElement('div');
-            el.textContent = `-${Math.round(amount)}`;
-            el.style.cssText = `
-                position: absolute; color: ${color}; font-size: 28px; font-weight: 900;
-                text-shadow: 0 0 20px #000, 0 0 10px #000;
-                pointer-events: none; z-index: 15;
-                transition: all 0.8s ease-out;
-                font-family: 'Segoe UI', Arial, sans-serif;
-            `;
-            // Convert world pos to screen
-            const vector = pos.clone().add(new THREE.Vector3(0, 1.2, 0));
-            vector.project(camera);
-            const x = (vector.x * 0.5 + 0.5) * window.innerWidth;
-            const y = (-vector.y * 0.5 + 0.5) * window.innerHeight;
-            el.style.left = x + 'px';
-            el.style.top = y + 'px';
-            document.body.appendChild(el);
-            requestAnimationFrame(() => {
-                el.style.transform = 'translateY(-60px) scale(1.5)';
+            el.className = 'toast ' + type;
+            el.innerHTML = `
+            <div class="toast-title">${title}</div>
+            <div class="toast-msg">${msg}</div>
+            ${detail ? `<div class="toast-detail">${detail}</div>` : ''}
+          `;
+            container.appendChild(el);
+            setTimeout(() => {
                 el.style.opacity = '0';
-            });
-            setTimeout(() => el.remove(), 900);
+                el.style.transform = 'translateY(20px)';
+                el.style.transition = '0.3s ease';
+                setTimeout(() => el.remove(), 300);
+            }, 4000);
         }
 
-        function spawnDashTrail(pos) {
-            const trail = new THREE.Mesh(new THREE.SphereGeometry(0.08, 4),
-                new THREE.MeshStandardMaterial({ color: 0x66ddff, emissive: 0x66ddff, emissiveIntensity: 2,
-                    transparent: true, opacity: 0.6 }));
-            trail.position.copy(pos);
-            scene.add(trail);
-            particles.push({ mesh: trail, vel: [new THREE.Vector3(0, 0, 0)], timer: 0, maxLife: 0.5, isTrail: true });
-        }
-
-        // =======================================================================
-        //  INPUT (Unified)
-        // =======================================================================
-        const keys = {};
-        let mouseDown = { left: false, right: false };
-        const touch = { moveX: 0, moveY: 0, attack: false, heavy: false, jump: false, dash: false, ability: false,
-            lockon: false, parry: false, inv: false };
-
-        // Keyboard
-        document.addEventListener('keydown', (e) => {
-            keys[e.key.toLowerCase()] = true;
-            if (e.key === 'Tab') { e.preventDefault();
-                togglePanel('skill-panel'); }
-            if (e.key === 'i') togglePanel('inv-panel');
-            if (e.key === 'q') togglePanel('quest-panel');
-        });
-        document.addEventListener('keyup', (e) => { keys[e.key.toLowerCase()] = false; });
-
-        // Mouse
-        renderer.domElement.addEventListener('mousedown', (e) => {
-            if (e.button === 0) mouseDown.left = true;
-            if (e.button === 2) mouseDown.right = true;
-        });
-        renderer.domElement.addEventListener('mouseup', (e) => {
-            if (e.button === 0) mouseDown.left = false;
-            if (e.button === 2) mouseDown.right = false;
-        });
-        renderer.domElement.addEventListener('contextmenu', e => e.preventDefault());
-        document.addEventListener('mousemove', (e) => {
-            if (document.pointerLockElement === renderer.domElement) {
-                camTheta -= e.movementX * 0.005;
-                camPhi = Math.max(0.2, Math.min(1.2, camPhi - e.movementY * 0.005));
+        // =============================================================
+        // LOGIN / REGISTER
+        // =============================================================
+        function updateAccountsInfo() {
+            const el = document.getElementById('accounts-info');
+            const count = data.users.length;
+            const max = 3;
+            if (count >= max) {
+                el.textContent = `⚠️ Maximum ${max} accounts reached. Registration disabled.`;
+                el.style.color = '#ff6b6b';
+            } else {
+                el.textContent = `${count} / ${max} accounts used`;
+                el.style.color = 'var(--text-muted)';
             }
-        });
-        renderer.domElement.addEventListener('click', () => {
-            if (!document.pointerLockElement && window.innerWidth > 768) {
-                renderer.domElement.requestPointerLock();
-                initAudio();
-            }
-        });
-
-        // Touch Joystick
-        const jArea = document.getElementById('joystick-area');
-        const jKnob = document.getElementById('joystick-knob');
-        let jTouchId = null;
-        jArea.addEventListener('touchstart', e => { e.preventDefault(); const t = e.changedTouches[0];
-            jTouchId = t.identifier;
-            updateJoystick(t.clientX, t.clientY); }, { passive: false });
-        jArea.addEventListener('touchmove', e => { e.preventDefault(); for (let t of e.changedTouches) { if (t.identifier ===
-                    jTouchId) updateJoystick(t.clientX, t.clientY); } }, { passive: false });
-        jArea.addEventListener('touchend', e => { e.preventDefault(); for (let t of e.changedTouches) { if (t.identifier ===
-                    jTouchId) { jTouchId = null;
-                    touch.moveX = 0;
-                    touch.moveY = 0;
-                    jKnob.style.transform = 'translate(-50%, -50%)'; } } }, { passive: false });
-        jArea.addEventListener('touchcancel', () => { jTouchId = null;
-            touch.moveX = 0;
-            touch.moveY = 0;
-            jKnob.style.transform = 'translate(-50%, -50%)'; }, { passive: false });
-
-        function updateJoystick(cx, cy) {
-            const rect = jArea.getBoundingClientRect();
-            const dx = cx - (rect.left + rect.width / 2),
-                dy = cy - (rect.top + rect.height / 2);
-            const maxD = rect.width / 2 - 8;
-            let dist = Math.sqrt(dx * dx + dy * dy);
-            let angle = Math.atan2(dy, dx);
-            let clamped = Math.min(dist, maxD);
-            if (dist < 5) { touch.moveX = 0;
-                touch.moveY = 0;
-                jKnob.style.transform = 'translate(-50%, -50%)'; return; }
-            const norm = clamped / maxD;
-            const dead = 0.15;
-            let final = Math.max(0, (norm - dead) / (1 - dead));
-            touch.moveX = Math.cos(angle) * final;
-            touch.moveY = Math.sin(angle) * final;
-            jKnob.style.transform = `translate(calc(-50% + ${Math.cos(angle)*clamped}px), calc(-50% + ${Math.sin(angle)*clamped}px))`;
         }
 
-        // Camera drag
-        const cDrag = document.getElementById('camera-drag');
-        let cDragId = null;
-        cDrag.addEventListener('touchstart', e => { e.preventDefault(); const t = e.changedTouches[0];
-            cDragId = t.identifier; }, { passive: false });
-        cDrag.addEventListener('touchmove', e => { e.preventDefault(); for (let t of e.changedTouches) { if (t.identifier ===
-                    cDragId) { const dx = t.movementX || 0,
-                    dy = t.movementY || 0; if (Math.abs(dx) > 0.5 || Math.abs(dy) > 0.5) { camTheta -= dx * 0.008;
-                        camPhi = Math.max(0.2, Math.min(1.2, camPhi - dy * 0.008)); } } } }, { passive: false });
-        cDrag.addEventListener('touchend', e => { e.preventDefault(); for (let t of e.changedTouches) { if (t.identifier ===
-                    cDragId) cDragId = null; } }, { passive: false });
-        cDrag.addEventListener('touchcancel', () => { cDragId = null; }, { passive: false });
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('login-username').value.trim();
+            const code = document.getElementById('login-code').value.trim();
+            const errorEl = document.getElementById('login-error');
 
-        // Buttons
-        function setupBtn(id, key) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.addEventListener('touchstart', e => { e.preventDefault();
-                touch[key] = true;
-                el.classList.add('pressed');
-                if (key === 'jump' || key === 'dash' || key === 'ability' || key === 'lockon' || key === 'parry' || key ===
-                    'inv') {
-                    setTimeout(() => { touch[key] = false;
-                        el.classList.remove('pressed'); }, 200);
-                } }, { passive: false });
-            el.addEventListener('touchend', e => { e.preventDefault(); if (key !== 'jump' && key !== 'dash' && key !==
-                    'ability' && key !== 'lockon' && key !== 'parry' && key !== 'inv') { touch[key] = false; }
-                el.classList.remove('pressed'); }, { passive: false });
-            el.addEventListener('touchcancel', () => { touch[key] = false;
-                el.classList.remove('pressed'); }, { passive: false });
-        }
-        setupBtn('btn-attack', 'attack');
-        setupBtn('btn-heavy', 'heavy');
-        setupBtn('btn-jump', 'jump');
-        setupBtn('btn-dash', 'dash');
-        setupBtn('btn-ability', 'ability');
-        setupBtn('btn-lock', 'lockon');
-        setupBtn('btn-parry', 'parry');
-        setupBtn('btn-inv', 'inv');
-
-        // =======================================================================
-        //  UI HELPERS
-        // =======================================================================
-        function togglePanel(id) {
-            const el = document.getElementById(id);
-            if (!el) return;
-            const was = el.classList.contains('active');
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            if (!was) el.classList.add('active');
-        }
-        document.querySelectorAll('.panel-close').forEach(btn => {
-            btn.addEventListener('click', () => {
-                document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            });
-        });
-
-        function renderUI() {
-            // HUD
-            document.getElementById('hp-fill').style.width = (health / CONFIG.maxHealth * 100) + '%';
-            document.getElementById('hp-text').textContent = Math.round(health);
-            document.getElementById('stam-fill').style.width = (stamina / CONFIG.maxStamina * 100) + '%';
-            document.getElementById('stam-text').textContent = Math.round(stamina);
-            document.getElementById('energy-fill').style.width = (energy / CONFIG.maxEnergy * 100) + '%';
-            document.getElementById('energy-text').textContent = Math.round(energy);
-            const comboEl = document.getElementById('combo-display');
-            if (combo > 1) { comboEl.textContent = `⚔️ ${combo}x COMBO`;
-                comboEl.classList.add('active'); } else { comboEl.classList.remove('active'); }
-            document.getElementById('lockon-indicator').classList.toggle('active', locked && lockOnTarget);
-
-            // Skill tree
-            const container = document.getElementById('skill-tree-container');
-            container.innerHTML = '';
-            skillTree.forEach(s => {
-                const div = document.createElement('div');
-                div.className = 'skill-node' + (s.unlocked ? ' unlocked' : '');
-                div.innerHTML = `
-                    <span>${s.name} (${s.cost} SP)</span>
-                    <button ${s.unlocked || skillPoints < s.cost ? 'disabled' : ''} data-skill="${s.id}">${s.unlocked ? '✓' : 'Unlock'}</button>
-                `;
-                container.appendChild(div);
-            });
-            document.getElementById('skill-points').textContent = skillPoints;
-            document.querySelectorAll('[data-skill]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const id = btn.dataset.skill;
-                    const skill = skillTree.find(s => s.id === id);
-                    if (!skill || skill.unlocked || skillPoints < skill.cost) return;
-                    skillPoints -= skill.cost;
-                    skill.unlocked = true;
-                    skill.effect();
-                    renderUI();
-                    saveGame();
-                });
-            });
-
-            // Inventory
-            const invC = document.getElementById('inv-container');
-            invC.innerHTML = '';
-            if (inventory.potion > 0) {
-                const div = document.createElement('div');
-                div.className = 'inv-item';
-                div.innerHTML =
-                    `❤️ Health Potion x${inventory.potion} <button data-use="potion">Use</button>`;
-                invC.appendChild(div);
+            if (!username || !code) {
+                errorEl.textContent = 'Please fill in all fields.';
+                errorEl.classList.add('show');
+                return;
             }
-            if (inventory.energyPotion > 0) {
-                const div = document.createElement('div');
-                div.className = 'inv-item';
-                div.innerHTML =
-                    `🌀 Energy Potion x${inventory.energyPotion} <button data-use="energyPotion">Use</button>`;
-                invC.appendChild(div);
-            }
-            if (inventory.potion === 0 && inventory.energyPotion === 0) {
-                invC.innerHTML = '<div style="color:#888;text-align:center;padding:20px;">Empty</div>';
-            }
-            document.querySelectorAll('[data-use]').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const key = btn.dataset.use;
-                    if (key === 'potion' && inventory.potion > 0) {
-                        inventory.potion--;
-                        health = Math.min(CONFIG.maxHealth, health + 30);
-                        sfxHeal();
-                        renderUI();
-                        saveGame();
-                    } else if (key === 'energyPotion' && inventory.energyPotion > 0) {
-                        inventory.energyPotion--;
-                        energy = Math.min(CONFIG.maxEnergy, energy + 25);
-                        sfxHeal();
-                        renderUI();
-                        saveGame();
-                    }
-                });
-            });
 
-            // Quests
-            const qC = document.getElementById('quest-container');
-            qC.innerHTML = '';
-            activeQuests.forEach(q => {
-                const div = document.createElement('div');
-                div.className = 'quest-item' + (q.complete ? ' complete' : '');
-                div.innerHTML = `
-                    <div><strong>${q.name}</strong> ${q.complete ? '✅' : ''}</div>
-                    <div style="font-size:13px;color:#ccc;">${q.desc}</div>
-                    <div class="progress">Progress: ${q.progress}/${q.target}</div>
-                `;
-                qC.appendChild(div);
+            const user = data.users.find(u => u.username.toLowerCase() === username.toLowerCase());
+            if (user && code === 'OBI123321') {
+                currentUser = user.username;
+                errorEl.classList.remove('show');
+                document.getElementById('login-page').classList.add('hidden');
+                document.getElementById('app').classList.add('active');
+                document.getElementById('sidebar-username').textContent = currentUser;
+                addLog('Login', 'User logged in');
+                initApp();
+                showToast('Welcome back!', `Hello, ${currentUser}`, '', 'success');
+                saveData();
+                return;
+            }
+
+            errorEl.textContent = 'Access Denied — Invalid username or master code.';
+            errorEl.classList.add('show');
+            // shake animation re-trigger
+            errorEl.style.animation = 'none';
+            requestAnimationFrame(() => {
+                errorEl.style.animation = 'shake 0.5s ease';
             });
         }
 
-        // =======================================================================
-        //  SAVE / LOAD
-        // =======================================================================
-        function saveGame() {
-            const data = {
-                health,
-                stamina,
-                energy,
-                skillPoints,
-                inventory,
-                quests: activeQuests.map(q => ({ id: q.id, progress: q.progress, complete: q.complete })),
-                skillTree: skillTree.map(s => ({ id: s.id, unlocked: s.unlocked })),
-                playerPos: playerGroup.position.toArray(),
+        function showRegister() {
+            const errorEl = document.getElementById('login-error');
+            if (data.users.length >= 3) {
+                errorEl.textContent = '⚠️ Maximum 3 accounts already created.';
+                errorEl.classList.add('show');
+                return;
+            }
+            const username = prompt('Choose a username:');
+            if (!username) return;
+            if (data.users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                errorEl.textContent = 'Username already exists.';
+                errorEl.classList.add('show');
+                return;
+            }
+            const code = prompt('Enter Master Employee Code to create account:');
+            if (code !== 'OBI123321') {
+                errorEl.textContent = 'Invalid master code.';
+                errorEl.classList.add('show');
+                return;
+            }
+            data.users.push({ username: username.trim(), password: 'OBI123321' });
+            saveData();
+            updateAccountsInfo();
+            errorEl.classList.remove('show');
+            showToast('Account Created!', `Welcome, ${username}. You can now login.`, '', 'success');
+        }
+
+        // =============================================================
+        // ACTIVITY LOG
+        // =============================================================
+        function addLog(action, description, tireData = null, saleData = null) {
+            const now = new Date();
+            const entry = {
+                id: generateId(),
+                date: formatDate(now),
+                time: formatTime(now),
+                timestamp: now.toISOString(),
+                username: currentUser || 'system',
+                action: action,
+                description: description,
+                brand: tireData?.brand || '',
+                size: tireData?.size || '',
+                type: tireData?.type || '',
+                quantity: tireData?.quantity || 0,
+                price: tireData?.price || 0,
+                total: saleData?.total || 0
             };
-            localStorage.setItem('animeRPG_save', JSON.stringify(data));
+            data.logs.unshift(entry);
+            // keep last 500 logs
+            if (data.logs.length > 500) data.logs = data.logs.slice(0, 500);
+            saveData();
+            renderActivityLog();
+            renderDashboardRecent();
         }
 
-        function loadGame() {
-            const raw = localStorage.getItem('animeRPG_save');
-            if (!raw) return false;
-            try {
-                const data = JSON.parse(raw);
-                health = data.health || CONFIG.maxHealth;
-                stamina = data.stamina || CONFIG.maxStamina;
-                energy = data.energy || CONFIG.maxEnergy;
-                skillPoints = data.skillPoints || 0;
-                if (data.inventory) {
-                    inventory.potion = data.inventory.potion || 0;
-                    inventory.energyPotion = data.inventory.energyPotion || 0;
-                }
-                if (data.quests) {
-                    data.quests.forEach(savedQ => {
-                        const q = quests.find(q => q.id === savedQ.id);
-                        if (q) {
-                            q.progress = savedQ.progress || 0;
-                            q.complete = savedQ.complete || false;
-                            if (!activeQuests.includes(q)) activeQuests.push(q);
-                        }
-                    });
-                }
-                if (data.skillTree) {
-                    data.skillTree.forEach(s => {
-                        const skill = skillTree.find(sk => sk.id === s.id);
-                        if (skill && s.unlocked) {
-                            skill.unlocked = true;
-                            skill.effect();
-                        }
-                    });
-                }
-                if (data.playerPos) {
-                    playerGroup.position.set(data.playerPos[0], data.playerPos[1], data.playerPos[2]);
-                }
-                renderUI();
-                return true;
-            } catch (e) { return false; }
+        // =============================================================
+        // DASHBOARD
+        // =============================================================
+        function updateDashboardStats() {
+            const tires = data.tires;
+            const totalQty = tires.reduce((sum, t) => sum + t.quantity, 0);
+            const lowCount = tires.filter(t => t.quantity < 5).length;
+            const brands = new Set(tires.map(t => t.brand.toLowerCase())).size;
+
+            // Today's sales
+            const todaySales = data.sales
+                .filter(s => isToday(new Date(s.timestamp)))
+                .reduce((sum, s) => sum + (s.total || 0), 0);
+
+            animateNumber('stat-total', totalQty);
+            animateNumber('stat-today', todaySales, true);
+            animateNumber('stat-low', lowCount);
+            animateNumber('stat-brands', brands);
+
+            // Update low stock count on dashboard
+            document.getElementById('stat-low').className = 'stat-number' + (lowCount > 0 ? ' red' : '');
         }
 
-        // =======================================================================
-        //  GAME LOOP
-        // =======================================================================
-        const clock = new THREE.Clock();
-        let time = 0;
+        function animateNumber(elId, target, isCurrency = false) {
+            const el = document.getElementById(elId);
+            if (!el) return;
+            const current = parseFloat(el.textContent.replace(/[$,]/g, '')) || 0;
+            const duration = 600;
+            const start = performance.now();
+            const startVal = current;
 
-        function animate() {
-            requestAnimationFrame(animate);
-            const dt = Math.min(clock.getDelta(), 0.05);
-            time += dt;
-
-            // ---- Weather ----
-            const weatherPhase = Math.sin(time * 0.005) * 0.5 + 0.5;
-            const rainIntensity = Math.max(0, Math.sin(time * 0.003 + 0.5) * 0.8);
-            // (visual rain particles could be added, but keep it simple)
-
-            // ---- Day/Night ----
-            const sunAngle = time * 0.02;
-            sun.position.set(Math.cos(sunAngle) * 45, 25 + Math.sin(sunAngle) * 20, Math.sin(sunAngle) * 45);
-            const bright = Math.max(0.3, Math.sin(sunAngle) * 0.5 + 0.5);
-            sun.intensity = 0.5 + bright * 2.0;
-            scene.background.setHSL(0.6, 0.4, 0.05 + bright * 0.15);
-            scene.fog.color.copy(scene.background);
-
-            // ---- Player Input ----
-            const move = { x: 0, y: 0 };
-            if (keys['w'] || keys['arrowup']) move.y += 1;
-            if (keys['s'] || keys['arrowdown']) move.y -= 1;
-            if (keys['a'] || keys['arrowleft']) move.x -= 1;
-            if (keys['d'] || keys['arrowright']) move.x += 1;
-            const len = Math.sqrt(move.x * move.x + move.y * move.y);
-            if (len > 1) { move.x /= len;
-                move.y /= len; }
-            if (Math.abs(touch.moveX) > 0.05 || Math.abs(touch.moveY) > 0.05) {
-                move.x = touch.moveX;
-                move.y = touch.moveY;
-            }
-            const sprint = keys['shift'] || false;
-            const jump = (keys[' '] || touch.jump) && (() => { if (keys[' ']) keys[' '] = false; if (touch.jump) touch
-                    .jump = false; return true; })();
-            const dash = (keys['q'] || touch.dash) && (() => { if (keys['q']) keys['q'] = false; if (touch.dash) touch
-                    .dash = false; return true; })();
-            const lightAtk = (mouseDown.left || touch.attack) && (() => { if (touch.attack) touch.attack = false; return true;
-                })();
-            const heavyAtk = (mouseDown.right || touch.heavy) && (() => { if (touch.heavy) touch.heavy = false; return true;
-                })();
-            const ability = (keys['f'] || touch.ability) && (() => { if (keys['f']) keys['f'] = false; if (touch.ability)
-                    touch.ability = false; return true; })();
-            const lockon = (keys['e'] || touch.lockon) && (() => { if (keys['e']) keys['e'] = false; if (touch.lockon) touch
-                    .lockon = false; return true; })();
-            const parry = (keys['r'] || touch.parry) && (() => { if (keys['r']) keys['r'] = false; if (touch.parry) touch
-                    .parry = false; return true; })();
-            const invToggle = (keys['i'] || touch.inv) && (() => { if (keys['i']) keys['i'] = false; if (touch.inv) touch
-                    .inv = false; return true; })();
-
-            if (invToggle) togglePanel('inv-panel');
-
-            // ---- Movement ----
-            const forward = new THREE.Vector3(-Math.sin(camTheta), 0, -Math.cos(camTheta));
-            const right = new THREE.Vector3(Math.cos(camTheta), 0, -Math.sin(camTheta));
-            const moveDir = new THREE.Vector3();
-            if (move.x !== 0 || move.y !== 0) {
-                moveDir.add(forward.clone().multiplyScalar(move.y));
-                moveDir.add(right.clone().multiplyScalar(move.x));
-                if (moveDir.length() > 0) moveDir.normalize();
-            }
-            const speed = (sprint && stamina > 0) ? CONFIG.sprintSpeed : CONFIG.walkSpeed;
-            if (sprint) stamina -= 12 * dt;
-            if (!sprint && !dashing) stamina += CONFIG.staminaRegen * dt;
-            stamina = Math.max(0, Math.min(CONFIG.maxStamina, stamina));
-
-            if (!attacking && !dashing) {
-                const amt = moveDir.clone().multiplyScalar(speed * dt);
-                playerGroup.position.add(amt);
-                if (moveDir.length() > 0.1) {
-                    const targetRot = Math.atan2(moveDir.x, moveDir.z);
-                    let diff = targetRot - playerGroup.rotation.y;
-                    while (diff > Math.PI) diff -= Math.PI * 2;
-                    while (diff < -Math.PI) diff += Math.PI * 2;
-                    playerGroup.rotation.y += diff * Math.min(1, 10 * dt);
+            function update(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const val = startVal + (target - startVal) * eased;
+                el.textContent = isCurrency ? formatCurrency(val) : Math.round(val);
+                if (progress < 1) requestAnimationFrame(update);
+                else {
+                    el.textContent = isCurrency ? formatCurrency(target) : Math.round(target);
                 }
             }
+            requestAnimationFrame(update);
+        }
 
-            // Jump
-            pVel.y += CONFIG.gravity * dt;
-            if (playerGroup.position.y <= 1.0 && pVel.y < 0) {
-                pVel.y = 0;
-                grounded = true;
-                jumpCount = 0;
-            } else { grounded = false; }
-            if (jump && (grounded || jumpCount < CONFIG.maxJumps) && stamina > 5) {
-                pVel.y = CONFIG.jumpForce;
-                jumpCount++;
-                stamina -= 5;
-                spawnHit(playerGroup.position.clone().add(new THREE.Vector3(0, 0.5, 0)), 0x88ddff, 10);
-                sfxDash();
+        function renderDashboardRecent() {
+            const container = document.getElementById('dashboard-recent-log');
+            const recent = data.logs.slice(0, 10);
+            if (!recent.length) {
+                container.innerHTML = `<div class="empty-state" style="padding:20px 0;"><p>No recent activity.</p></div>`;
+                return;
             }
-            playerGroup.position.y += pVel.y * dt;
+            container.innerHTML = recent.map(log => `
+            <div style="display:flex;gap:12px;padding:10px 14px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border-glass);font-size:0.85rem;align-items:center;flex-wrap:wrap;">
+              <span style="color:var(--gold);font-weight:600;font-size:0.75rem;min-width:60px;">${log.time}</span>
+              <span style="flex:1;">${log.description}</span>
+              ${log.brand ? `<span style="color:var(--text-muted);font-size:0.75rem;">${log.brand} ${log.size}</span>` : ''}
+            </div>
+          `).join('');
+        }
 
-            // Dash
-            if (dash && !dashing && stamina >= 20) {
-                dashing = true;
-                dashTimer = CONFIG.dashDuration;
-                stamina -= 20;
-                const dd = moveDir.length() > 0.1 ? moveDir : new THREE.Vector3(-Math.sin(camTheta), 0, -Math.cos(
-                camTheta));
-                spawnDashTrail(playerGroup.position);
-                sfxDash();
-            }
-            if (dashing) {
-                dashTimer -= dt;
-                const dd = moveDir.length() > 0.1 ? moveDir : new THREE.Vector3(-Math.sin(camTheta), 0, -Math.cos(
-                camTheta));
-                playerGroup.position.add(dd.clone().multiplyScalar(CONFIG.dashSpeed * dt));
-                if (dashTimer <= 0) dashing = false;
-            }
+        // =============================================================
+        // INVENTORY
+        // =============================================================
+        function renderInventory() {
+            const grid = document.getElementById('inventory-grid');
+            let filtered = data.tires;
 
-            // ---- Combat ----
-            if (abilityCooldown > 0) abilityCooldown -= dt;
-            if (parry && !attacking && !dashing && stamina >= 10) {
-                parrying = true;
-                parryTimer = 0.25;
-                stamina -= 10;
-                sfxParry();
-                spawnHit(playerGroup.position.clone().add(new THREE.Vector3(0, 1, 0)), 0x88ddff, 30);
-                // Parry reflects melee attacks in a small window
-                setTimeout(() => { parrying = false; }, 250);
+            // Search
+            if (currentSearch.trim()) {
+                const s = currentSearch.trim().toLowerCase();
+                filtered = filtered.filter(t =>
+                    t.brand.toLowerCase().includes(s) ||
+                    t.size.toLowerCase().includes(s)
+                );
             }
 
-            // Light attack
-            if (lightAtk && !attacking && !dashing && stamina >= 5) {
-                attacking = true;
-                isHeavy = false;
-                attackTimer = CONFIG.lightAttackDuration;
-                stamina -= 5;
-                combo++;
-                if (comboTimeout) clearTimeout(comboTimeout);
-                comboTimeout = setTimeout(() => { combo = 0; }, 1500);
-                const origin = playerGroup.position.clone().add(new THREE.Vector3(0, 0.8, 0));
-                const dir = new THREE.Vector3(-Math.sin(camTheta), 0, -Math.cos(camTheta));
-                const hitPos = origin.clone().add(dir.clone().multiplyScalar(2.5));
-                spawnHit(hitPos, 0x44ddff, 25);
-                sfxHit();
-                enemies.forEach(e => {
-                    if (e.isDead) return;
-                    const dist = e.mesh.position.distanceTo(playerGroup.position);
-                    if (dist < 3.0) {
-                        const angle = Math.atan2(e.mesh.position.x - playerGroup.position.x, e.mesh.position.z -
-                            playerGroup.position.z);
-                        const playerAngle = Math.atan2(-Math.sin(camTheta), -Math.cos(camTheta));
-                        let diff = angle - playerAngle;
-                        while (diff > Math.PI) diff -= Math.PI * 2;
-                        while (diff < -Math.PI) diff += Math.PI * 2;
-                        if (Math.abs(diff) < 1.2) {
-                            const dmg = (12 + Math.random() * 6) * playerAttackMult;
-                            e.health -= dmg;
-                            e.hitFlash = 0.2;
-                            spawnHit(e.mesh.position.clone().add(new THREE.Vector3(0, 1, 0)), 0xff8844, 30);
-                            spawnDamageNumber(e.mesh.position, dmg);
-                            if (e.health <= 0) {
-                                e.isDead = true;
-                                e.deathTimer = 2;
-                                spawnHit(e.mesh.position, 0xff2244, 50);
-                                sfxDeath();
-                                // Quest progress
-                                activeQuests.forEach(q => { if (q.id === 'q1') { q.progress = Math.min(q.target, q
-                                            .progress + 1); if (q.progress >= q.target && !q.complete) { q
-                                            .complete = true;
-                                            q.reward(); } } if (q.id === 'q3' && e.isBoss) { q.progress = 1;
-                                        q.complete = true;
-                                        q.reward(); } });
-                                // Loot
-                                if (Math.random() < 0.4) { inventory.potion++;
-                                    sfxHeal(); }
-                                if (Math.random() < 0.2) { inventory.energyPotion++;
-                                    sfxHeal(); }
-                                saveGame();
-                            }
-                        }
-                    }
-                });
+            // Filter
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(t => t.type === currentFilter);
             }
 
-            // Heavy attack
-            if (heavyAtk && !attacking && !dashing && stamina >= 15) {
-                attacking = true;
-                isHeavy = true;
-                attackTimer = CONFIG.heavyAttackDuration;
-                stamina -= 15;
-                combo = 0;
-                const origin = playerGroup.position.clone().add(new THREE.Vector3(0, 0.5, 0));
-                spawnHit(origin, 0xff6633, 60);
-                sfxHit();
-                enemies.forEach(e => {
-                    if (e.isDead) return;
-                    const dist = e.mesh.position.distanceTo(playerGroup.position);
-                    if (dist < 4.0) {
-                        const dmg = (25 + Math.random() * 10) * playerAttackMult;
-                        e.health -= dmg;
-                        e.hitFlash = 0.4;
-                        spawnHit(e.mesh.position.clone().add(new THREE.Vector3(0, 1, 0)), 0xff4422, 40);
-                        spawnDamageNumber(e.mesh.position, dmg);
-                        if (e.health <= 0) {
-                            e.isDead = true;
-                            e.deathTimer = 2;
-                            spawnHit(e.mesh.position, 0xff2244, 50);
-                            sfxDeath();
-                            activeQuests.forEach(q => { if (q.id === 'q1') { q.progress = Math.min(q.target, q
-                                        .progress + 1); if (q.progress >= q.target && !q.complete) { q
-                                        .complete = true;
-                                        q.reward(); } } if (q.id === 'q3' && e.isBoss) { q.progress = 1;
-                                    q.complete = true;
-                                    q.reward(); } });
-                            if (Math.random() < 0.4) { inventory.potion++;
-                                sfxHeal(); }
-                            if (Math.random() < 0.2) { inventory.energyPotion++;
-                                sfxHeal(); }
-                            saveGame();
-                        }
-                    }
-                });
-            }
-            if (attacking) {
-                attackTimer -= dt;
-                if (attackTimer <= 0) attacking = false;
+            if (!filtered.length) {
+                grid.innerHTML = `
+              <div class="empty-state" style="grid-column:1/-1;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+                <h3>No tires found</h3>
+                <p>Add your first tire to get started.</p>
+              </div>
+            `;
+                return;
             }
 
-            // Ability
-            if (ability && abilityCooldown <= 0 && energy >= 20) {
-                abilityCooldown = CONFIG.abilityCooldown;
-                energy -= 20;
-                const dir = new THREE.Vector3(-Math.sin(camTheta), 0, -Math.cos(camTheta));
-                const origin = playerGroup.position.clone().add(new THREE.Vector3(0, 1.2, 0));
-                spawnHit(origin.clone().add(dir.clone().multiplyScalar(3)), 0xaa66ff, 80);
-                sfxAbility();
-                enemies.forEach(e => {
-                    if (e.isDead) return;
-                    const dist = e.mesh.position.distanceTo(playerGroup.position);
-                    if (dist < 8) {
-                        const angle = Math.atan2(e.mesh.position.x - playerGroup.position.x, e.mesh.position.z -
-                            playerGroup.position.z);
-                        const playerAngle = Math.atan2(-Math.sin(camTheta), -Math.cos(camTheta));
-                        let diff = angle - playerAngle;
-                        while (diff > Math.PI) diff -= Math.PI * 2;
-                        while (diff < -Math.PI) diff += Math.PI * 2;
-                        if (Math.abs(diff) < 1.8) {
-                            const dmg = 35 * abilityDamageMult;
-                            e.health -= dmg;
-                            e.hitFlash = 0.3;
-                            spawnHit(e.mesh.position.clone().add(new THREE.Vector3(0, 1, 0)), 0xaa44ff, 50);
-                            spawnDamageNumber(e.mesh.position, dmg, '#aa88ff');
-                            if (e.health <= 0) {
-                                e.isDead = true;
-                                e.deathTimer = 2;
-                                spawnHit(e.mesh.position, 0xff2244, 50);
-                                sfxDeath();
-                                activeQuests.forEach(q => { if (q.id === 'q1') { q.progress = Math.min(q.target,
-                                            q.progress + 1); if (q.progress >= q.target && !q.complete) { q
-                                            .complete = true;
-                                            q.reward(); } } if (q.id === 'q3' && e.isBoss) { q.progress = 1;
-                                        q.complete = true;
-                                        q.reward(); } });
-                                if (Math.random() < 0.4) { inventory.potion++;
-                                    sfxHeal(); }
-                                if (Math.random() < 0.2) { inventory.energyPotion++;
-                                    sfxHeal(); }
-                                saveGame();
-                            }
-                        }
-                    }
-                });
-            }
+            grid.innerHTML = filtered.map(t => {
+                const isLow = t.quantity < 5;
+                return `
+              <div class="tire-card">
+                ${isLow ? `<div class="low-stock-badge">⚠️ Low Stock</div>` : ''}
+                <div class="tire-brand">${t.brand}</div>
+                <div class="tire-size">${t.size}</div>
+                <div class="tire-type">${t.type}</div>
+                <div class="tire-quantity ${isLow ? 'low' : ''}">${t.quantity} in stock</div>
+                <div class="tire-price">${formatCurrency(t.price)} / tire</div>
+                <div class="tire-actions">
+                  <button class="btn btn-success btn-sm sell-btn" data-id="${t.id}">Sell</button>
+                  <button class="btn btn-outline-gold btn-sm edit-btn" data-id="${t.id}">Edit</button>
+                  <button class="btn btn-danger btn-sm delete-btn" data-id="${t.id}">Delete</button>
+                </div>
+              </div>
+            `;
+            }).join('');
 
-            // Energy regen
-            if (energy < CONFIG.maxEnergy) energy += CONFIG.energyRegen * dt;
+            // Attach events
+            grid.querySelectorAll('.sell-btn').forEach(b => b.addEventListener('click', () => openSellModal(b.dataset.id)));
+            grid.querySelectorAll('.edit-btn').forEach(b => b.addEventListener('click', () => openEditModal(b.dataset.id)));
+            grid.querySelectorAll('.delete-btn').forEach(b => b.addEventListener('click', () => deleteTire(b.dataset.id)));
+        }
 
-            // ---- Lock-on ----
-            if (lockon) {
-                if (!locked) {
-                    let closest = Infinity,
-                        ce = null;
-                    enemies.forEach(e => {
-                        if (e.isDead) return;
-                        const d = e.mesh.position.distanceTo(playerGroup.position);
-                        if (d < 25 && d < closest) { closest = d;
-                            ce = e; }
-                    });
-                    if (ce) { locked = true;
-                        lockOnTarget = ce; }
-                } else { locked = false;
-                    lockOnTarget = null; }
-            }
-            if (locked && lockOnTarget) {
-                if (lockOnTarget.isDead || lockOnTarget.mesh.position.distanceTo(playerGroup.position) > 30) {
-                    locked = false;
-                    lockOnTarget = null;
-                } else {
-                    const dir = new THREE.Vector3(
-                        lockOnTarget.mesh.position.x - playerGroup.position.x,
-                        0,
-                        lockOnTarget.mesh.position.z - playerGroup.position.z
-                    );
-                    if (dir.length() > 0.1) {
-                        const targetRot = Math.atan2(dir.x, dir.z);
-                        let diff = targetRot - playerGroup.rotation.y;
-                        while (diff > Math.PI) diff -= Math.PI * 2;
-                        while (diff < -Math.PI) diff += Math.PI * 2;
-                        playerGroup.rotation.y += diff * Math.min(1, 8 * dt);
-                    }
-                }
-            }
+        function getTire(id) {
+            return data.tires.find(t => t.id === id);
+        }
 
-            // ---- Enemy AI ----
-            enemies.forEach(e => {
-                if (e.isDead) {
-                    e.deathTimer -= dt;
-                    if (e.deathTimer <= 0) e.mesh.visible = false;
+        function deleteTire(id) {
+            if (!confirm('Delete this tire permanently?')) return;
+            const tire = getTire(id);
+            if (!tire) return;
+            data.tires = data.tires.filter(t => t.id !== id);
+            addLog('Deleted', `Deleted tire: ${tire.brand} ${tire.size}`, tire);
+            saveData();
+            renderAll();
+            showToast('Deleted', `${tire.brand} ${tire.size} removed.`, '', 'error');
+        }
+
+        // =============================================================
+        // ADD / EDIT MODAL
+        // =============================================================
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Add Tire';
+            document.getElementById('modal-submit').textContent = 'Add Tire';
+            const fields = document.getElementById('modal-fields');
+            fields.innerHTML = `
+            <div class="input-group"><label>Brand</label><input type="text" id="f-brand" placeholder="e.g. Michelin" required /></div>
+            <div class="input-group"><label>Tire Size</label><input type="text" id="f-size" placeholder="e.g. 225/45R17" required /></div>
+            <div class="input-group"><label>Tire Type</label>
+              <select id="f-type">
+                <option value="Winter">Winter</option>
+                <option value="Summer">Summer</option>
+                <option value="All Season">All Season</option>
+                <option value="All Weather">All Weather</option>
+              </select>
+            </div>
+            <div class="input-group"><label>Quantity</label><input type="number" id="f-qty" min="0" value="10" required /></div>
+            <div class="input-group"><label>Selling Price ($)</label><input type="number" id="f-price" min="0" step="1" value="100" required /></div>
+          `;
+            document.getElementById('modal-form').dataset.mode = 'add';
+            document.getElementById('modal-overlay').classList.add('open');
+        }
+
+        function openEditModal(id) {
+            const tire = getTire(id);
+            if (!tire) return;
+            document.getElementById('modal-title').textContent = 'Edit Tire';
+            document.getElementById('modal-submit').textContent = 'Update';
+            const fields = document.getElementById('modal-fields');
+            fields.innerHTML = `
+            <div class="input-group"><label>Brand</label><input type="text" id="f-brand" value="${tire.brand}" required /></div>
+            <div class="input-group"><label>Tire Size</label><input type="text" id="f-size" value="${tire.size}" required /></div>
+            <div class="input-group"><label>Tire Type</label>
+              <select id="f-type">
+                ${['Winter','Summer','All Season','All Weather'].map(t => `<option value="${t}" ${t===tire.type?'selected':''}>${t}</option>`).join('')}
+              </select>
+            </div>
+            <div class="input-group"><label>Quantity</label><input type="number" id="f-qty" min="0" value="${tire.quantity}" required /></div>
+            <div class="input-group"><label>Selling Price ($)</label><input type="number" id="f-price" min="0" step="1" value="${tire.price}" required /></div>
+            <input type="hidden" id="f-edit-id" value="${id}" />
+          `;
+            document.getElementById('modal-form').dataset.mode = 'edit';
+            document.getElementById('modal-overlay').classList.add('open');
+        }
+
+        function openSellModal(id) {
+            const tire = getTire(id);
+            if (!tire) return;
+            if (tire.quantity <= 0) {
+                showToast('Out of Stock', `${tire.brand} ${tire.size} is out of stock.`, '', 'error');
+                return;
+            }
+            document.getElementById('modal-title').textContent = `Sell — ${tire.brand} ${tire.size}`;
+            document.getElementById('modal-submit').textContent = 'Complete Sale';
+            const fields = document.getElementById('modal-fields');
+            fields.innerHTML = `
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;background:var(--bg-card);padding:14px;border-radius:var(--radius-sm);margin-bottom:12px;">
+              <div><span style="color:var(--text-muted);font-size:0.75rem;">Price / tire</span><br><strong style="color:var(--gold);font-size:1.2rem;">${formatCurrency(tire.price)}</strong></div>
+              <div><span style="color:var(--text-muted);font-size:0.75rem;">Available</span><br><strong style="font-size:1.2rem;">${tire.quantity}</strong></div>
+            </div>
+            <div class="input-group"><label>Quantity to Sell</label>
+              <input type="number" id="f-sell-qty" min="1" max="${tire.quantity}" value="1" required />
+            </div>
+            <div style="text-align:right;padding:8px 0;font-size:1.1rem;">
+              Total: <strong id="sell-total-preview" style="color:var(--gold);">${formatCurrency(tire.price)}</strong>
+            </div>
+            <input type="hidden" id="f-sell-id" value="${id}" />
+          `;
+            document.getElementById('modal-form').dataset.mode = 'sell';
+            document.getElementById('modal-overlay').classList.add('open');
+
+            // Live total preview
+            const qtyInput = document.getElementById('f-sell-qty');
+            const totalPreview = document.getElementById('sell-total-preview');
+            qtyInput.addEventListener('input', () => {
+                const qty = parseInt(qtyInput.value) || 0;
+                totalPreview.textContent = formatCurrency(qty * tire.price);
+            });
+        }
+
+        function handleModalSubmit(e) {
+            e.preventDefault();
+            const mode = document.getElementById('modal-form').dataset.mode;
+
+            if (mode === 'add') {
+                const brand = document.getElementById('f-brand').value.trim();
+                const size = document.getElementById('f-size').value.trim();
+                const type = document.getElementById('f-type').value;
+                const qty = parseInt(document.getElementById('f-qty').value) || 0;
+                const price = parseFloat(document.getElementById('f-price').value) || 0;
+                if (!brand || !size || qty < 0 || price < 0) {
+                    showToast('Invalid Input', 'Please fill all fields correctly.', '', 'error');
                     return;
                 }
-                if (e.hitFlash > 0) e.hitFlash -= dt;
-                const dist = e.mesh.position.distanceTo(playerGroup.position);
-                let state = 'idle';
-
-                if (dist < e.aggroRange) {
-                    state = 'chase';
-                    const dir = new THREE.Vector3().copy(playerGroup.position).sub(e.mesh.position);
-                    dir.y = 0;
-                    if (dir.length() > 0.5) {
-                        dir.normalize();
-                        e.mesh.position.add(dir.clone().multiplyScalar(e.speed * dt));
-                    }
-                    e.mesh.rotation.y = Math.atan2(dir.x, dir.z);
-
-                    // Ranged attack
-                    if (e.isRanged && dist < e.attackRange && e.attackCooldown <= 0) {
-                        e.attackCooldown = 1.5;
-                        // Projectile (simulated with hit effect)
-                        spawnHit(e.mesh.position.clone().add(new THREE.Vector3(0, 1, 0)), 0x44ff88, 15);
-                        if (dist < 10 && !dashing && !parrying) {
-                            health -= e.damage * 0.4;
-                            spawnHit(playerGroup.position.clone().add(new THREE.Vector3(0, 1, 0)), 0xff2244, 15);
-                            spawnDamageNumber(playerGroup.position, e.damage * 0.4, '#ff8888');
-                            if (health <= 0) {
-                                health = 0;
-                                setTimeout(() => { health = CONFIG.maxHealth;
-                                    stamina = CONFIG.maxStamina;
-                                    energy = CONFIG.maxEnergy;
-                                    playerGroup.position.set(0, 1, 0);
-                                    pVel.set(0, 0, 0);
-                                    saveGame(); }, 1000);
-                            }
-                        }
-                    }
-                    // Melee attack
-                    if (!e.isRanged && dist < e.attackRange && e.attackCooldown <= 0) {
-                        e.attackCooldown = 1.2;
-                        if (!dashing && !parrying) {
-                            health -= e.damage * 0.5;
-                            spawnHit(playerGroup.position.clone().add(new THREE.Vector3(0, 1, 0)), 0xff2244, 20);
-                            spawnDamageNumber(playerGroup.position, e.damage * 0.5, '#ff4444');
-                            if (health <= 0) {
-                                health = 0;
-                                setTimeout(() => { health = CONFIG.maxHealth;
-                                    stamina = CONFIG.maxStamina;
-                                    energy = CONFIG.maxEnergy;
-                                    playerGroup.position.set(0, 1, 0);
-                                    pVel.set(0, 0, 0);
-                                    saveGame(); }, 1000);
-                            }
-                        } else if (parrying) {
-                            // Parry reflection: damage enemy
-                            e.health -= 20;
-                            e.hitFlash = 0.3;
-                            spawnHit(e.mesh.position.clone().add(new THREE.Vector3(0, 1, 0)), 0x88ddff, 30);
-                            spawnDamageNumber(e.mesh.position, 20, '#88ddff');
-                            if (e.health <= 0) {
-                                e.isDead = true;
-                                e.deathTimer = 2;
-                                spawnHit(e.mesh.position, 0xff2244, 50);
-                                sfxDeath();
-                                activeQuests.forEach(q => { if (q.id === 'q1') { q.progress = Math.min(q.target,
-                                            q.progress + 1); if (q.progress >= q.target && !q.complete) { q
-                                            .complete = true;
-                                            q.reward(); } } if (q.id === 'q3' && e.isBoss) { q.progress = 1;
-                                        q.complete = true;
-                                        q.reward(); } });
-                                if (Math.random() < 0.4) { inventory.potion++;
-                                    sfxHeal(); }
-                                if (Math.random() < 0.2) { inventory.energyPotion++;
-                                    sfxHeal(); }
-                                saveGame();
-                            }
-                        }
-                    }
-                    // Boss phase 2
-                    if (e.isBoss && e.health < e.maxHealth * 0.4 && e.phase === 1) {
-                        e.phase = 2;
-                        e.speed *= 1.5;
-                        e.damage *= 1.3;
-                        e.mesh.children.forEach(child => {
-                            if (child.isMesh && child.material) {
-                                child.material.emissiveIntensity = 1.0;
-                                child.material.color.setHex(0xff2222);
-                            }
-                        });
-                        spawnHit(e.mesh.position, 0xff0000, 100);
-                        sfxDeath();
-                    }
-                } else {
-                    // Idle wander
-                    e.mesh.rotation.y += dt * 0.3;
-                }
-                if (e.attackCooldown > 0) e.attackCooldown -= dt;
-            });
-
-            // ---- Camera ----
-            const targetPos = playerGroup.position.clone();
-            camPivot.position.lerp(targetPos, 1 - Math.exp(-8 * dt));
-            const off = new THREE.Vector3(
-                Math.sin(camTheta) * Math.cos(camPhi) * 5.5,
-                Math.sin(camPhi) * 5.5 + 1.5,
-                Math.cos(camTheta) * Math.cos(camPhi) * 5.5
-            );
-            const desired = camPivot.position.clone().add(off);
-            camera.position.lerp(desired, 1 - Math.exp(-10 * dt));
-            camera.lookAt(camPivot.position.clone().add(new THREE.Vector3(0, 1.2, 0)));
-
-            // ---- VFX update ----
-            for (let i = particles.length - 1; i >= 0; i--) {
-                const p = particles[i];
-                p.timer += dt;
-                if (p.timer > p.maxLife) {
-                    scene.remove(p.mesh);
-                    if (p.mesh.geometry) p.mesh.geometry.dispose();
-                    particles.splice(i, 1);
-                    continue;
-                }
-                const prog = p.timer / p.maxLife;
-                if (p.mesh.isPoints) {
-                    const pos = p.mesh.geometry.attributes.position;
-                    for (let j = 0; j < p.vel.length; j++) {
-                        pos.array[j * 3] += p.vel[j].x * dt;
-                        pos.array[j * 3 + 1] += p.vel[j].y * dt;
-                        pos.array[j * 3 + 2] += p.vel[j].z * dt;
-                        p.vel[j].multiplyScalar(0.98);
-                    }
-                    pos.needsUpdate = true;
-                    p.mesh.material.opacity = 1 - prog;
-                } else if (p.isTrail) {
-                    p.mesh.material.opacity = 1 - prog;
-                    p.mesh.scale.setScalar(1 + prog * 2);
-                } else {
-                    p.mesh.material.opacity = 1 - prog;
-                    p.mesh.scale.setScalar(1 + prog);
-                }
+                const tire = { id: generateId(), brand, size, type, quantity: qty, price };
+                data.tires.push(tire);
+                addLog('Added', `Added tire: ${brand} ${size} (${type})`, tire);
+                saveData();
+                renderAll();
+                closeModal();
+                showToast('Tire Added', `${brand} ${size} added to inventory.`, '', 'success');
+                return;
             }
 
-            // ---- Enemy flash ----
-            enemies.forEach(e => {
-                if (e.isDead) return;
-                e.mesh.children.forEach(child => {
-                    if (child.isMesh && child.material) {
-                        child.material.emissiveIntensity = e.hitFlash > 0 ? 1.5 : (e.isBoss && e.phase === 2 ?
-                            0.8 : 0.15);
-                    }
+            if (mode === 'edit') {
+                const id = document.getElementById('f-edit-id').value;
+                const tire = getTire(id);
+                if (!tire) return;
+                const brand = document.getElementById('f-brand').value.trim();
+                const size = document.getElementById('f-size').value.trim();
+                const type = document.getElementById('f-type').value;
+                const qty = parseInt(document.getElementById('f-qty').value) || 0;
+                const price = parseFloat(document.getElementById('f-price').value) || 0;
+                if (!brand || !size || qty < 0 || price < 0) {
+                    showToast('Invalid Input', 'Please fill all fields correctly.', '', 'error');
+                    return;
+                }
+                const old = { ...tire };
+                tire.brand = brand;
+                tire.size = size;
+                tire.type = type;
+                tire.quantity = qty;
+                tire.price = price;
+                addLog('Edited', `Edited tire: ${brand} ${size}`, tire);
+                saveData();
+                renderAll();
+                closeModal();
+                showToast('Tire Updated', `${brand} ${size} updated.`, '', 'info');
+                return;
+            }
+
+            if (mode === 'sell') {
+                const id = document.getElementById('f-sell-id').value;
+                const tire = getTire(id);
+                if (!tire) return;
+                const qty = parseInt(document.getElementById('f-sell-qty').value) || 0;
+                if (qty < 1 || qty > tire.quantity) {
+                    showToast('Invalid Quantity', 'Please enter a valid quantity.', '', 'error');
+                    return;
+                }
+                const total = qty * tire.price;
+                tire.quantity -= qty;
+
+                const saleRecord = {
+                    id: generateId(),
+                    timestamp: new Date().toISOString(),
+                    date: formatDate(new Date()),
+                    time: formatTime(new Date()),
+                    username: currentUser,
+                    brand: tire.brand,
+                    size: tire.size,
+                    type: tire.type,
+                    quantity: qty,
+                    price: tire.price,
+                    total: total
+                };
+                data.sales.push(saleRecord);
+
+                // Update stats
+                data.stats.totalSales += total;
+                data.stats.totalTiresSold += qty;
+                data.stats.todaySales += total;
+                data.stats.lastUpdated = new Date().toISOString();
+
+                addLog('Sold', `Sold ${qty} × ${tire.brand} ${tire.size}`, tire, { total });
+                saveData();
+                renderAll();
+                closeModal();
+
+                showToast(
+                    '✅ Sale Completed',
+                    `${qty} Tires Sold`,
+                    `Total: ${formatCurrency(total)}`,
+                    'success'
+                );
+                return;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('open');
+        }
+
+        // =============================================================
+        // SALES PAGE
+        // =============================================================
+        function renderSalesPage() {
+            const sales = data.sales;
+            const now = new Date();
+
+            const todayTotal = sales
+                .filter(s => isToday(new Date(s.timestamp)))
+                .reduce((sum, s) => sum + s.total, 0);
+
+            const weekTotal = sales
+                .filter(s => isInWeek(new Date(s.timestamp)))
+                .reduce((sum, s) => sum + s.total, 0);
+
+            const monthTotal = sales
+                .filter(s => isInMonth(new Date(s.timestamp)))
+                .reduce((sum, s) => sum + s.total, 0);
+
+            const totalAll = sales.reduce((sum, s) => sum + s.total, 0);
+            const totalCount = sales.reduce((sum, s) => sum + s.quantity, 0);
+
+            document.getElementById('sales-today').textContent = formatCurrency(todayTotal);
+            document.getElementById('sales-week').textContent = formatCurrency(weekTotal);
+            document.getElementById('sales-month').textContent = formatCurrency(monthTotal);
+            document.getElementById('sales-total').textContent = formatCurrency(totalAll);
+            document.getElementById('sales-count').textContent = totalCount;
+
+            // History
+            const container = document.getElementById('sales-history');
+            if (!sales.length) {
+                container.innerHTML = `<div class="empty-state" style="padding:20px 0;"><p>No sales recorded yet.</p></div>`;
+                return;
+            }
+            const sorted = [...sales].reverse().slice(0, 100);
+            container.innerHTML = sorted.map(s => `
+            <div style="display:flex;gap:12px;padding:12px 16px;background:var(--bg-card);border-radius:var(--radius-sm);border:1px solid var(--border-glass);flex-wrap:wrap;align-items:center;">
+              <span style="color:var(--gold);font-weight:600;font-size:0.75rem;min-width:70px;">${s.time}</span>
+              <span style="flex:1;font-size:0.9rem;"><strong>${s.brand}</strong> ${s.size} <span style="color:var(--text-muted);font-size:0.8rem;">(${s.type})</span></span>
+              <span style="font-size:0.85rem;">${s.quantity} × ${formatCurrency(s.price)}</span>
+              <span style="color:var(--gold);font-weight:700;font-size:1rem;">${formatCurrency(s.total)}</span>
+            </div>
+          `).join('');
+        }
+
+        // =============================================================
+        // ACTIVITY LOG PAGE
+        // =============================================================
+        function renderActivityLog() {
+            const container = document.getElementById('activity-log-list');
+            if (!data.logs.length) {
+                container.innerHTML = `<div class="empty-state"><p>No activity recorded yet.</p></div>`;
+                return;
+            }
+            container.innerHTML = data.logs.map(log => {
+                const badgeClass = {
+                    'Login': 'login',
+                    'Logout': 'logout',
+                    'Added': 'added',
+                    'Edited': 'edited',
+                    'Deleted': 'deleted',
+                    'Sold': 'sold'
+                } [log.action] || 'info';
+                let detail = log.description;
+                if (log.brand) {
+                    detail += ` — ${log.brand} ${log.size}`;
+                    if (log.quantity) detail += ` (${log.quantity})`;
+                    if (log.total) detail += ` · Total: ${formatCurrency(log.total)}`;
+                }
+                return `
+              <div class="log-item">
+                <span class="log-time">${log.time}</span>
+                <span class="log-badge ${badgeClass}">${log.action}</span>
+                <span class="log-desc"><strong>${log.username}</strong> ${detail}</span>
+                <span class="log-detail">${log.date}</span>
+              </div>
+            `;
+            }).join('');
+        }
+
+        // =============================================================
+        // NAVIGATION
+        // =============================================================
+        function navigateTo(page) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+            document.querySelector(`.sidebar-nav a[data-page="${page}"]`).classList.add('active');
+
+            if (page === 'dashboard') { updateDashboardStats();
+                renderDashboardRecent(); }
+            if (page === 'inventory') renderInventory();
+            if (page === 'sales') renderSalesPage();
+            if (page === 'activity') renderActivityLog();
+        }
+
+        // =============================================================
+        // RENDER ALL
+        // =============================================================
+        function renderAll() {
+            updateDashboardStats();
+            renderDashboardRecent();
+            renderInventory();
+            renderSalesPage();
+            renderActivityLog();
+        }
+
+        // =============================================================
+        // INIT APP
+        // =============================================================
+        function initApp() {
+            renderAll();
+            // Recalc stats on load
+            updateDashboardStats();
+        }
+
+        // =============================================================
+        // EVENT LISTENERS
+        // =============================================================
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // ---- Startup ----
+            const startup = document.getElementById('startup-overlay');
+            setTimeout(() => {
+                startup.classList.add('hidden');
+                // check if already logged in
+                const saved = localStorage.getItem('obi_session');
+                if (saved) {
+                    try {
+                        const session = JSON.parse(saved);
+                        if (session.username && data.users.some(u => u.username === session.username)) {
+                            currentUser = session.username;
+                            document.getElementById('login-page').classList.add('hidden');
+                            document.getElementById('app').classList.add('active');
+                            document.getElementById('sidebar-username').textContent = currentUser;
+                            initApp();
+                            return;
+                        }
+                    } catch (_) {}
+                }
+                document.getElementById('login-page').classList.remove('hidden');
+                updateAccountsInfo();
+            }, 2200);
+
+            // ---- Login ----
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+            document.getElementById('show-register').addEventListener('click', showRegister);
+
+            // ---- Logout ----
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                addLog('Logout', 'User logged out');
+                currentUser = null;
+                localStorage.removeItem('obi_session');
+                document.getElementById('app').classList.remove('active');
+                document.getElementById('login-page').classList.remove('hidden');
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-code').value = '';
+                document.getElementById('login-error').classList.remove('show');
+                showToast('Logged out', 'See you next time!', '', 'info');
+            });
+
+            // ---- Navigation ----
+            document.querySelectorAll('.sidebar-nav a').forEach(a => {
+                a.addEventListener('click', () => {
+                    const page = a.dataset.page;
+                    navigateTo(page);
+                    // close mobile sidebar if needed
                 });
             });
 
-            // ---- UI ----
-            renderUI();
+            // ---- Add Tire ----
+            document.getElementById('add-tire-btn').addEventListener('click', openAddModal);
+            document.getElementById('fab-add').addEventListener('click', openAddModal);
 
-            // ---- Save periodically ----
-            if (Math.floor(time) % 10 === 0 && time > 0) saveGame();
+            // ---- Modal ----
+            document.getElementById('modal-cancel').addEventListener('click', closeModal);
+            document.getElementById('modal-overlay').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) closeModal();
+            });
+            document.getElementById('modal-form').addEventListener('submit', handleModalSubmit);
 
-            // ---- Render ----
-            composer.render();
-        }
+            // ---- Search ----
+            document.getElementById('search-input').addEventListener('input', (e) => {
+                currentSearch = e.target.value;
+                renderInventory();
+            });
 
-        // =======================================================================
-        //  START
-        // =======================================================================
-        loadGame();
-        animate();
+            // ---- Filters ----
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentFilter = btn.dataset.filter;
+                    renderInventory();
+                });
+            });
 
-        window.addEventListener('resize', () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
+            // ---- Clear Log ----
+            document.getElementById('clear-log-btn').addEventListener('click', () => {
+                if (confirm('Clear all activity logs?')) {
+                    data.logs = [];
+                    saveData();
+                    renderActivityLog();
+                    renderDashboardRecent();
+                    showToast('Log Cleared', 'Activity log has been cleared.', '', 'info');
+                }
+            });
+
+            // ---- Session persist ----
+            // Save session on login
+            const origLogin = handleLogin;
+            handleLogin = function(e) {
+                e.preventDefault();
+                const username = document.getElementById('login-username').value.trim();
+                const code = document.getElementById('login-code').value.trim();
+                const errorEl = document.getElementById('login-error');
+                if (!username || !code) {
+                    errorEl.textContent = 'Please fill in all fields.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+                const user = data.users.find(u => u.username.toLowerCase() === username.toLowerCase());
+                if (user && code === 'OBI123321') {
+                    currentUser = user.username;
+                    localStorage.setItem('obi_session', JSON.stringify({ username: currentUser }));
+                    errorEl.classList.remove('show');
+                    document.getElementById('login-page').classList.add('hidden');
+                    document.getElementById('app').classList.add('active');
+                    document.getElementById('sidebar-username').textContent = currentUser;
+                    addLog('Login', 'User logged in');
+                    initApp();
+                    saveData();
+                    showToast('Welcome back!', `Hello, ${currentUser}`, '', 'success');
+                    return;
+                }
+                errorEl.textContent = 'Access Denied — Invalid username or master code.';
+                errorEl.classList.add('show');
+                errorEl.style.animation = 'none';
+                requestAnimationFrame(() => {
+                    errorEl.style.animation = 'shake 0.5s ease';
+                });
+            };
+            document.getElementById('login-form').addEventListener('submit', handleLogin);
+
+            // ---- Keyboard shortcut: Escape to close modal ----
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closeModal();
+            });
+
+            // ---- Re-render on visibility change (tab focus) ----
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden && document.getElementById('app').classList.contains('active')) {
+                    // Reload data from storage
+                    data = loadData();
+                    renderAll();
+                }
+            });
+
+            // ---- Fix: re-apply login handler after startup ----
+            // The original handler is replaced above, but we need to ensure it's attached
+            // Actually we already attached it. Let's make sure the register handler works.
+            // Override showRegister to work with the new login flow
+            const origShowRegister = showRegister;
+            showRegister = function() {
+                const errorEl = document.getElementById('login-error');
+                if (data.users.length >= 3) {
+                    errorEl.textContent = '⚠️ Maximum 3 accounts already created.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+                const username = prompt('Choose a username:');
+                if (!username) return;
+                if (data.users.some(u => u.username.toLowerCase() === username.toLowerCase())) {
+                    errorEl.textContent = 'Username already exists.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+                const code = prompt('Enter Master Employee Code to create account:');
+                if (code !== 'OBI123321') {
+                    errorEl.textContent = 'Invalid master code.';
+                    errorEl.classList.add('show');
+                    return;
+                }
+                data.users.push({ username: username.trim(), password: 'OBI123321' });
+                saveData();
+                updateAccountsInfo();
+                errorEl.classList.remove('show');
+                showToast('Account Created!', `Welcome, ${username}. You can now login.`, '', 'success');
+            };
+            document.getElementById('show-register').addEventListener('click', showRegister);
+
+            // ---- Update accounts info on load ----
+            updateAccountsInfo();
+
+            // ---- If already logged in (session), skip login ----
+            // This is already handled in the startup timeout
         });
 
-        // Touch to init audio
-        document.addEventListener('touchstart', initAudio, { once: true });
-        console.log('🔥 Anime RPG Deluxe loaded! Press Tab for skills, I for inventory, Q for quests.');
+        // =============================================================
+        // POLYFILL FOR OLD BROWSERS
+        // =============================================================
+        // (none needed for modern browsers)
+
+        console.log('🛞 OBI Tire Inventory loaded successfully.');
+        console.log(`📦 ${data.tires.length} tires, ${data.users.length} users, ${data.logs.length} logs.`);
     </script>
 </body>
 </html>
